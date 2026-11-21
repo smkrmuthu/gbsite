@@ -35,8 +35,8 @@ const ridge = 'M' + profile.map(([x, py]) => `${x},${py.toFixed(1)}`).join('L');
 const ticks = [3000, 3500, 4000, 4500];
 const colors =
   tone === 'dark'
-    ? { hill: '#112c24', ridge: '#a9ad8f', band: '#d9c9ae', label: '#d9c9ae', tick: 'rgba(246,242,233,0.35)' }
-    : { hill: '#e7dfcd', ridge: '#5c6146', band: '#183c32', label: '#30231d', tick: 'rgba(48,35,29,0.28)' };
+    ? { hill: '#112c24', ridge: '#a9ad8f', band: '#d9c9ae', label: '#d9c9ae', tick: 'rgba(246,242,233,0.35)', halo: '#183c32' }
+    : { hill: '#e7dfcd', ridge: '#5c6146', band: '#183c32', label: '#30231d', tick: 'rgba(48,35,29,0.28)', halo: '#fbf9f4' };
 ---
 
 {
@@ -57,18 +57,28 @@ const colors =
           </clipPath>
         </defs>
         {ticks.map((ft) => (
-          <g>
-            <line x1="56" x2={W} y1={y(ft)} y2={y(ft)} stroke={colors.tick} stroke-width="1" stroke-dasharray="2 6" />
-            <text x="0" y={y(ft) + 4} fill={colors.label} font-size="13" font-family="Manrope Variable, Manrope, sans-serif" opacity="0.8">
-              {ft.toLocaleString('en-IN')} ft
-            </text>
-          </g>
+          <line x1="56" x2={W} y1={y(ft)} y2={y(ft)} stroke={colors.tick} stroke-width="1" stroke-dasharray="2 6" />
         ))}
         <path d={hill} fill={colors.hill} />
         <rect x="0" y={y(range.max)} width={W} height={y(range.min) - y(range.max)} fill={colors.band} opacity="0.9" clip-path={`url(#${id}-hill)`} />
         <path d={ridge} fill="none" stroke={colors.ridge} stroke-width="1.5" />
         <line x1="56" x2={W} y1={y(range.max)} y2={y(range.max)} stroke={colors.band} stroke-width="1" />
         <line x1="56" x2={W} y1={y(range.min)} y2={y(range.min)} stroke={colors.band} stroke-width="1" />
+        {ticks.map((ft) => (
+          <text
+            class="elevation__tick"
+            x="0"
+            y={y(ft) + 4}
+            fill={colors.label}
+            stroke={colors.halo}
+            stroke-width="0.25em"
+            paint-order="stroke"
+            stroke-linejoin="round"
+            font-family="Manrope Variable, Manrope, sans-serif"
+          >
+            {ft.toLocaleString('en-IN')} ft
+          </text>
+        ))}
       </svg>
       <figcaption>
         <span class="elevation__range">{range.feet}</span>
@@ -85,6 +95,21 @@ const colors =
     width: 100%;
     height: auto;
     overflow: visible;
+  }
+  /* Tick labels are in SVG units, so they shrink with the diagram. Scale them
+     up on narrow screens to stay about 12-13px on screen. */
+  .elevation__tick {
+    font-size: 13px;
+  }
+  @media (max-width: 40rem) {
+    .elevation__tick {
+      font-size: 34px;
+    }
+  }
+  @media (min-width: 40.01rem) and (max-width: 64rem) {
+    .elevation__tick {
+      font-size: 20px;
+    }
   }
   .elevation figcaption {
     display: grid;

@@ -2,9 +2,10 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import { loadEnv } from 'vite';
+import { normaliseSiteUrl } from '../../packages/brand/lib/site-url.ts';
 
 const env = loadEnv(process.env.NODE_ENV ?? 'production', process.cwd(), 'PUBLIC_');
-const site = (env.PUBLIC_MAIN_SITE_URL || 'https://glazebrookecoffee.com').replace(/\/+$/, '');
+const site = normaliseSiteUrl('PUBLIC_MAIN_SITE_URL', env.PUBLIC_MAIN_SITE_URL, 'https://glazebrookecoffee.com');
 
 // https://docs.astro.build/en/reference/configuration-reference/
 export default defineConfig({

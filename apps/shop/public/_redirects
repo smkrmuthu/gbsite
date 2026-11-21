@@ -1,0 +1,4 @@
+# Redirects for the shop (Netlify / Cloudflare Pages format).
+/shop                   /products/                 301
+/shop/                  /products/                 301
+/product/*              /products/                 301

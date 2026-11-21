@@ -1,0 +1,71 @@
+---
+/** Inner-page opening: headline and lede on the left, a tall photo slot bleeding right. */
+import Photo from '@glazebrooke/brand/components/Photo.astro';
+import type { PhotoKey } from '@glazebrooke/brand/config/photos';
+
+interface Props {
+  title: string;
+  lede: string;
+  photo: PhotoKey;
+  tone?: 'forest' | 'espresso' | 'beige' | 'cream' | 'olive';
+}
+const { title, lede, photo, tone = 'forest' } = Astro.props;
+---
+
+<section class="page-hero">
+  <div class="container page-hero__grid">
+    <div class="page-hero__text">
+      <h1>
+        {title.split(/(?<=\.)\s+/).map((line, i) => <span class="reveal-line" style={`--i:${i}`}>{line} </span>)}
+      </h1>
+      <p class="page-hero__lede reveal-soft">{lede}</p>
+      <slot />
+    </div>
+    <div class="page-hero__media">
+      <Photo slot={photo} priority tone={tone} ratio="4 / 5" sizes="(min-width: 64rem) 42vw, 100vw" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .page-hero {
+    padding-block: var(--s-8) var(--s-section);
+  }
+  .page-hero__grid {
+    display: grid;
+    gap: var(--s-7);
+  }
+  .page-hero__lede {
+    margin-top: var(--s-6);
+    max-width: 32rem;
+    font-size: var(--t-lg);
+    line-height: 1.6;
+    color: var(--c-text);
+  }
+  .page-hero__media {
+    margin-inline: calc(var(--gutter) * -1);
+  }
+  @media (min-width: 64rem) {
+    .page-hero {
+      padding-top: var(--s-9);
+    }
+    .page-hero__grid {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--gutter);
+      align-items: end;
+    }
+    .page-hero__text {
+      grid-column: 1 / span 7;
+      padding-bottom: var(--s-6);
+    }
+    .page-hero__media {
+      grid-column: 8 / -1;
+      margin-inline: 0 calc(var(--gutter) * -1);
+    }
+  }
+  @media (min-width: 90rem) {
+    .page-hero__media {
+      margin-right: calc((100vw - var(--max-width)) / -2 - var(--gutter));
+    }
+  }
+</style>

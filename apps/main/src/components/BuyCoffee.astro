@@ -1,0 +1,59 @@
+---
+/** Closing invitation to the shop, used at the end of most pages. */
+import ContourArt from '@glazebrooke/brand/components/ContourArt.astro';
+import { shopUrl } from '@glazebrooke/brand/lib/links';
+
+interface Props {
+  heading?: string;
+  text?: string;
+}
+const {
+  heading = 'Bring the taste of Glazebrooke home.',
+  text = 'Our coffee is available from the Glazebrooke shop, where each product page explains exactly how ordering works.',
+} = Astro.props;
+---
+
+<section class="buy surface-forest on-dark" aria-labelledby="buy-heading">
+  <div class="buy__art" aria-hidden="true"><ContourArt seed="buy-coffee" tone="forest" lines={9} /></div>
+  <div class="container buy__inner">
+    <h2 id="buy-heading">{heading}</h2>
+    <div class="buy__body">
+      <p>{text}</p>
+      <a class="btn btn--light" href={shopUrl('/')} data-track="shop_click" data-track-label="buy coffee band">Visit the shop</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .buy {
+    position: relative;
+    overflow: hidden;
+    padding-block: var(--s-section);
+  }
+  .buy__art {
+    position: absolute;
+    inset: 45% 0 0 0;
+    opacity: 0.55;
+  }
+  .buy__inner {
+    position: relative;
+    display: grid;
+    gap: var(--s-6);
+  }
+  .buy h2 {
+    max-width: 13em;
+  }
+  .buy__body {
+    display: grid;
+    gap: var(--s-5);
+    justify-items: start;
+    max-width: 26rem;
+    color: var(--c-beige);
+  }
+  @media (min-width: 64rem) {
+    .buy__inner {
+      grid-template-columns: 7fr 5fr;
+      align-items: end;
+    }
+  }
+</style>

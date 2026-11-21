@@ -1,0 +1,153 @@
+---
+import ShopLayout from '../layouts/ShopLayout.astro';
+import ProductCard from '../components/ProductCard.astro';
+import HowToOrder from '../components/HowToOrder.astro';
+import Photo from '@glazebrooke/brand/components/Photo.astro';
+import ElevationDiagram from '@glazebrooke/brand/components/ElevationDiagram.astro';
+import { elevationRange } from '@glazebrooke/brand/config/facts';
+import { mainUrl } from '@glazebrooke/brand/lib/links';
+import { products } from '../data/products';
+
+const featured = products.filter((p) => p.featured).slice(0, 3);
+const elevation = elevationRange();
+---
+
+<ShopLayout
+  title="Glazebrooke Coffee Shop | Buy Estate Coffee from Yercaud Online"
+  description="Buy Glazebrooke coffee online: estate-grown coffee from Yercaud in the Shevaroy Hills of Tamil Nadu. Browse the range and see how to order."
+>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="container hero__grid">
+      <div class="hero__text">
+        <h1 id="hero-title">
+          <span class="reveal-line" style="--i:0">Coffee from</span>
+          <span class="reveal-line" style="--i:1">Glazebrooke Estate,</span>
+          <span class="reveal-line" style="--i:2">Yercaud.</span>
+        </h1>
+        <p class="hero__lede reveal-soft">Estate-grown in the Shevaroy Hills of Tamil Nadu. Browse the range and see how to order.</p>
+        <div class="actions reveal-soft">
+          <a class="btn" href="/products/">Shop all coffee</a>
+          <a class="text-link" href="/about-our-coffee/">About our coffee</a>
+        </div>
+      </div>
+      <div class="hero__media">
+        <Photo slot="shop-hero" priority tone="espresso" ratio="4 / 5" sizes="(min-width: 64rem) 45vw, 100vw" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section featured" aria-labelledby="featured-title">
+    <div class="container">
+      <div class="featured__head">
+        <h2 id="featured-title">Our coffee</h2>
+        <a class="text-link" href="/products/">See all products</a>
+      </div>
+      <div class="product-grid">
+        {featured.map((p, i) => <ProductCard product={p} index={i} />)}
+      </div>
+    </div>
+  </section>
+
+  <HowToOrder />
+
+  {
+    elevation && (
+      <section class="section surface-forest on-dark origin" aria-labelledby="origin-title">
+        <div class="container grid">
+          <div class="origin__text">
+            <h2 id="origin-title">From the Shevaroy Hills.</h2>
+            <p>
+              Glazebrooke coffee is grown at Glazebrooke Coffee Estate in Yercaud, at approximately {elevation.feet} above sea level.
+            </p>
+            <a class="text-link" href={mainUrl('/our-estate/')} data-track="estate_click">
+              Explore the estate
+            </a>
+          </div>
+          <div class="origin__figure">
+            <ElevationDiagram tone="dark" />
+          </div>
+        </div>
+      </section>
+    )
+  }
+</ShopLayout>
+
+<style>
+  .hero {
+    padding-block: var(--s-8) var(--s-section);
+  }
+  .hero__grid {
+    display: grid;
+    gap: var(--s-7);
+  }
+  .hero__text {
+    display: grid;
+    gap: var(--s-6);
+    align-content: end;
+    justify-items: start;
+  }
+  .hero__lede {
+    max-width: 26rem;
+    font-size: var(--t-lg);
+  }
+  .hero__media {
+    margin-inline: calc(var(--gutter) * -1);
+  }
+  @media (min-width: 64rem) {
+    .hero__grid {
+      grid-template-columns: 7fr 5fr;
+      column-gap: var(--gutter);
+    }
+    .hero__media {
+      margin-inline: 0 calc(var(--gutter) * -1);
+    }
+    .hero__text {
+      padding-bottom: var(--s-6);
+    }
+  }
+
+  .featured__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-4);
+    margin-bottom: var(--s-7);
+  }
+  .product-grid {
+    display: grid;
+    gap: var(--s-8) var(--gutter);
+  }
+  @media (min-width: 40rem) {
+    .product-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 64rem) {
+    .product-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .product-grid > :global(:nth-child(3n + 2)) {
+      margin-top: var(--s-8);
+    }
+  }
+
+  .origin__text {
+    display: grid;
+    gap: var(--s-5);
+    align-content: start;
+    justify-items: start;
+  }
+  .origin__text p {
+    max-width: 28rem;
+    color: var(--c-beige);
+  }
+  @media (min-width: 64rem) {
+    .origin__text {
+      grid-column: 1 / span 5;
+    }
+    .origin__figure {
+      grid-column: 6 / -1;
+    }
+  }
+</style>

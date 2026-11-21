@@ -1,0 +1,82 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import BuyCoffee from '../components/BuyCoffee.astro';
+import Photo from '@glazebrooke/brand/components/Photo.astro';
+import Pending from '@glazebrooke/brand/components/Pending.astro';
+---
+
+<MainLayout
+  title="Our People: The Team Behind the Coffee | Glazebrooke Coffee Estate"
+  description="Meet the people of Glazebrooke Coffee Estate in Yercaud, whose care and craft through the year make every harvest possible."
+>
+  <PageHero
+    title="Coffee is grown by people."
+    lede="Every season at Glazebrooke depends on the people who work the estate: planting, tending, harvesting and caring for the coffee through the year."
+    photo="people-harvest"
+    tone="beige"
+  />
+
+  <section class="section surface-paper" aria-labelledby="craft-title">
+    <div class="container grid">
+      <div class="craft__text prose">
+        <h2 id="craft-title" class="t-2xl">Craft and care</h2>
+        <p>
+          Much of the work on a coffee estate is done by hand, and much of the knowledge behind it is passed on in person, season after
+          season.
+        </p>
+        <p>These are the people who make Glazebrooke coffee what it is. We want to introduce them properly, in their own words.</p>
+      </div>
+      <div class="craft__media">
+        <Photo slot="people-craft" tone="espresso" ratio="5 / 4" sizes="(min-width: 64rem) 50vw, 100vw" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="team-title">
+    <div class="container grid">
+      <div class="team__media">
+        <Photo slot="people-portrait" tone="olive" ratio="3 / 4" sizes="(min-width: 64rem) 35vw, 100vw" />
+      </div>
+      <div class="team__text prose">
+        <h2 id="team-title" class="t-2xl">The team</h2>
+        <Pending
+          title="People's stories, shared with their consent"
+          items={[
+            'Short profiles: name (or first name), role and years at Glazebrooke',
+            'A sentence or two in their own words about their work',
+            'Portraits, with written permission to publish',
+            'Any community or welfare initiatives the estate supports',
+          ]}
+        />
+      </div>
+    </div>
+  </section>
+
+  <BuyCoffee />
+</MainLayout>
+
+<style>
+  .craft__text,
+  .team__text {
+    align-self: center;
+  }
+  .craft__text > * + *,
+  .team__text > * + * {
+    margin-top: var(--s-5);
+  }
+  @media (min-width: 64rem) {
+    .craft__text {
+      grid-column: 1 / span 5;
+    }
+    .craft__media {
+      grid-column: 7 / -1;
+    }
+    .team__media {
+      grid-column: 2 / span 4;
+    }
+    .team__text {
+      grid-column: 7 / span 5;
+    }
+  }
+</style>

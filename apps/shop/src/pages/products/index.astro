@@ -1,0 +1,75 @@
+---
+import ShopLayout from '../../layouts/ShopLayout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import Breadcrumbs from '@glazebrooke/brand/components/Breadcrumbs.astro';
+import { breadcrumbSchema } from '@glazebrooke/brand/lib/seo';
+import { products, isPublished } from '../../data/products';
+
+const base = Astro.site!;
+const crumbs = [
+  { name: 'Shop', href: '/' },
+  { name: 'All coffee', href: '/products/' },
+];
+const published = products.filter(isPublished);
+const itemList = published.length
+  ? [
+      {
+        '@type': 'ItemList',
+        itemListElement: published.map((p, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          url: new URL(`/products/${p.slug}/`, base).href,
+          name: p.name,
+        })),
+      },
+    ]
+  : [];
+---
+
+<ShopLayout
+  title="Shop All Coffee | Glazebrooke Estate Coffee from Yercaud"
+  description="The full range of Glazebrooke estate coffee, grown in Yercaud, Tamil Nadu. Compare products and see how to order."
+  schema={[breadcrumbSchema(crumbs.map((c) => ({ name: c.name, url: new URL(c.href, base).href }))), ...itemList]}
+>
+  <section class="section all">
+    <div class="container">
+      <Breadcrumbs items={crumbs} />
+      <header class="all__head">
+        <h1 class="t-3xl">All coffee</h1>
+        <p>Glazebrooke coffee is grown at Glazebrooke Coffee Estate in Yercaud. Open a product for its details and ordering options.</p>
+      </header>
+      <div class="product-grid">
+        {products.map((p, i) => <ProductCard product={p} index={i} headingLevel="h2" />)}
+      </div>
+    </div>
+  </section>
+</ShopLayout>
+
+<style>
+  .all {
+    padding-top: var(--s-7);
+  }
+  .all__head {
+    display: grid;
+    gap: var(--s-4);
+    margin-block: var(--s-6) var(--s-8);
+  }
+  .all__head p {
+    max-width: 32rem;
+    font-size: var(--t-lg);
+  }
+  .product-grid {
+    display: grid;
+    gap: var(--s-8) var(--gutter);
+  }
+  @media (min-width: 40rem) {
+    .product-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 64rem) {
+    .product-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

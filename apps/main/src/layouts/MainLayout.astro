@@ -1,0 +1,43 @@
+---
+import SiteLayout from '@glazebrooke/brand/components/SiteLayout.astro';
+import { graph, organizationSchema, webPageSchema, websiteSchema } from '@glazebrooke/brand/lib/seo';
+import { SITE_NAME, DESCRIPTOR, nav, buyCta, footerNav, crossLink } from '../site';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  imageAlt?: string;
+  noindex?: boolean;
+  /** Extra JSON-LD nodes for this page (added to the page @graph). */
+  schema?: Record<string, unknown>[];
+}
+const { title, description, image, imageAlt, noindex, schema = [] } = Astro.props;
+const url = new URL(Astro.url.pathname, Astro.site).href;
+const isHome = Astro.url.pathname === '/';
+
+const jsonLd = noindex
+  ? undefined
+  : graph(
+      ...(isHome ? [organizationSchema(), websiteSchema('main')] : []),
+      webPageSchema({ url, name: title, description, site: 'main' }),
+      ...schema,
+    );
+---
+
+<SiteLayout
+  title={title}
+  description={description}
+  image={image}
+  imageAlt={imageAlt}
+  noindex={noindex}
+  jsonLd={jsonLd}
+  siteName={SITE_NAME}
+  descriptor={DESCRIPTOR}
+  nav={nav}
+  cta={buyCta}
+  footerNav={footerNav}
+  crossLink={crossLink}
+>
+  <slot />
+</SiteLayout>

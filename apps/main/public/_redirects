@@ -1,0 +1,15 @@
+# Redirects for the main site (Netlify / Cloudflare Pages format).
+# The previous site could not be crawled when this was written, so old URLs
+# are unknown. Run `npm run import:legacy`, list the old URLs from
+# legacy-import/REPORT.md, and add a 301 for each one that no longer exists.
+# /beyond-coffee/ is preserved as the "Our brand" page — no redirect needed.
+
+/our-brand              /beyond-coffee/            301
+/our-brand/             /beyond-coffee/            301
+/about                  /beyond-coffee/            301
+/about/                 /beyond-coffee/            301
+/about-us/              /beyond-coffee/            301
+/contact-us/            /contact/                  301
+/shop                   https://shop.glazebrookecoffee.com/  301
+/shop/*                 https://shop.glazebrookecoffee.com/products/  301
+/product/*              https://shop.glazebrookecoffee.com/products/  301

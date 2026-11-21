@@ -1,0 +1,42 @@
+---
+import '../styles/base.css';
+import BaseHead, { type HeadProps } from './BaseHead.astro';
+import Header, { type NavItem } from './Header.astro';
+import Footer from './Footer.astro';
+import Analytics from './Analytics.astro';
+import { brand } from '../config/brand.config';
+
+interface Props extends HeadProps {
+  descriptor: string;
+  nav: NavItem[];
+  cta?: NavItem & { track?: string };
+  footerNav: NavItem[];
+  crossLink: NavItem & { note: string; track?: string };
+  contactHref?: string;
+  privacyHref?: string;
+}
+const { descriptor, nav, cta, footerNav, crossLink, contactHref = '/contact/', privacyHref = '/privacy/', ...head } = Astro.props;
+---
+
+<!doctype html>
+<html lang={brand.lang}>
+  <head>
+    <BaseHead {...head} />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header nav={nav} cta={cta} descriptor={descriptor} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer descriptor={descriptor} nav={footerNav} crossLink={crossLink} contactHref={contactHref} privacyHref={privacyHref} />
+    <Analytics privacyHref={privacyHref} />
+  </body>
+</html>
+
+<style>
+  main:focus {
+    outline: none;
+  }
+</style>

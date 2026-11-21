@@ -1,0 +1,78 @@
+---
+/**
+ * Document head: title, description, canonical, robots, Open Graph,
+ * X/Twitter card, favicons, Search Console verification and JSON-LD.
+ * Canonical URLs are built from the app's `site` (production domain).
+ */
+import { brand } from '../config/brand.config';
+import { GSC_VERIFICATION } from '../lib/env';
+
+export interface HeadProps {
+  /** Full, unique <title>. */
+  title: string;
+  /** Unique meta description, ideally 120–160 characters. */
+  description: string;
+  /** Public path of the share image (1200×630). */
+  image?: string;
+  imageAlt?: string;
+  ogType?: 'website' | 'article' | 'product';
+  /** Only for deliberately non-indexable pages (404, placeholder products). */
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown>;
+  siteName: string;
+}
+
+const {
+  title,
+  description,
+  image = '/og-default.png',
+  imageAlt = `${brand.name}, Yercaud`,
+  ogType = 'website',
+  noindex = false,
+  jsonLd,
+  siteName,
+} = Astro.props as HeadProps;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const imageUrl = new URL(image, Astro.site).href;
+const xHandle = brand.social.find((s) => s.network === 'x')?.handle;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'} />
+<meta name="theme-color" content="#183c32" />
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+<meta property="og:type" content={ogType} />
+<meta property="og:site_name" content={siteName} />
+<meta property="og:locale" content={brand.ogLocale} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={imageAlt} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+<meta name="twitter:image:alt" content={imageAlt} />
+{xHandle && <meta name="twitter:site" content={`@${xHandle}`} />}
+
+{GSC_VERIFICATION && <meta name="google-site-verification" content={GSC_VERIFICATION} />}
+{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+<script is:inline>
+  document.documentElement.classList.add('js');
+</script>

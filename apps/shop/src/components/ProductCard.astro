@@ -1,0 +1,98 @@
+---
+/**
+ * Unboxed product card: photo, name, summary, and size/price only when
+ * confirmed. The whole card is clickable through the heading link.
+ */
+import Photo from '@glazebrooke/brand/components/Photo.astro';
+import { type Product, priceSummary, isPublished } from '../data/products';
+
+interface Props {
+  product: Product;
+  headingLevel?: 'h2' | 'h3';
+  index?: number;
+}
+const { product, headingLevel: H = 'h3', index = 0 } = Astro.props;
+const price = priceSummary(product);
+const sizes = product.variants.map((v) => v.label).join(', ');
+const tones = ['espresso', 'forest', 'olive'] as const;
+---
+
+<article class="card">
+  <Photo
+    slot={product.photo}
+    alt={product.photoAlt ?? ''}
+    brief="product photograph"
+    tone={tones[index % tones.length]}
+    ratio="4 / 5"
+    sizes="(min-width: 64rem) 30vw, (min-width: 40rem) 45vw, 100vw"
+    quiet
+  />
+  <div class="card__body">
+    <H class="card__name">
+      <a href={`/products/${product.slug}/`}>{product.name}</a>
+    </H>
+    <p class="card__summary">{product.summary}</p>
+    <p class="card__meta">
+      {sizes && <span>{sizes}</span>}
+      {price && <span class="card__price">{price}</span>}
+      {!isPublished(product) && <span class="card__pending">Placeholder: details to be confirmed</span>}
+      {isPublished(product) && !price && !sizes && <span>Ask us for sizes and prices</span>}
+    </p>
+  </div>
+</article>
+
+<style>
+  .card {
+    position: relative;
+    display: grid;
+    gap: var(--s-4);
+    align-content: start;
+  }
+  .card__body {
+    display: grid;
+    gap: var(--s-2);
+  }
+  .card__name {
+    font-family: var(--f-display);
+    font-size: var(--t-xl);
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--c-forest);
+  }
+  .card__name a {
+    text-decoration: none;
+  }
+  .card__name a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .card:hover .card__name a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+  }
+  .card:focus-within {
+    outline: 2px solid var(--c-focus);
+    outline-offset: 6px;
+  }
+  .card__name a:focus-visible {
+    outline: none;
+  }
+  .card__summary {
+    font-size: var(--t-sm);
+    color: var(--c-text-muted);
+    max-width: 30rem;
+  }
+  .card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-1) var(--s-4);
+    font-size: var(--t-sm);
+    font-weight: 600;
+    color: var(--c-espresso);
+  }
+  .card__pending {
+    font-weight: 500;
+    color: var(--c-olive-ink);
+  }
+</style>

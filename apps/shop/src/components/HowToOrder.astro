@@ -1,0 +1,114 @@
+---
+/** The ordering process as a real sequence, worded for the configured channel. */
+import Pending from '@glazebrooke/brand/components/Pending.astro';
+import { orderAction } from '@glazebrooke/brand/lib/links';
+import { brand } from '@glazebrooke/brand/config/brand.config';
+
+const action = orderAction();
+const steps =
+  action?.channel === 'whatsapp'
+    ? [
+        ['Choose your coffee', 'Open a product to see its sizes and details.'],
+        ['Tap "Order on WhatsApp"', 'WhatsApp opens with a message naming the coffee. Add the size, quantity and delivery address.'],
+        ['Send the message', 'The estate replies on WhatsApp to confirm your order and how to pay.'],
+      ]
+    : action?.channel === 'external'
+      ? [
+          ['Choose your coffee', 'Open a product to see its sizes and details.'],
+          ['Tap "Order online"', `You continue to ${brand.ordering.externalLabel || 'our ordering partner'} to pay and arrange delivery.`],
+        ]
+      : action?.channel === 'email'
+        ? [
+            ['Choose your coffee', 'Open a product to see its sizes and details.'],
+            ['Tap "Order by email"', 'Your email app opens with a message naming the coffee. Add the size, quantity and delivery address.'],
+            ['Send the email', 'The estate replies to confirm your order and how to pay.'],
+          ]
+        : [];
+---
+
+<section class="section surface-beige how" aria-labelledby="how-title">
+  <div class="container grid">
+    <div class="how__intro">
+      <h2 id="how-title">How ordering works</h2>
+      <p>
+        {
+          action?.channel === 'external'
+            ? 'There is no account or checkout on this site. Orders are completed with our ordering partner.'
+            : 'There is no account or checkout on this site. You order directly with the estate.'
+        }
+      </p>
+    </div>
+    {
+      steps.length > 0 ? (
+        <ol class="how__steps">
+          {steps.map(([title, text], i) => (
+            <li>
+              <span class="how__num" aria-hidden="true">
+                {i + 1}
+              </span>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <div class="how__steps">
+          <Pending
+            title="Ordering route and steps"
+            items={[
+              'WhatsApp number or external ordering link (brand.config.ts → ordering)',
+              'Confirm how payment and delivery are arranged so the steps can describe them',
+            ]}
+          />
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .how__intro {
+    display: grid;
+    gap: var(--s-4);
+    align-content: start;
+  }
+  .how__intro p {
+    max-width: 24rem;
+  }
+  .how__steps {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--s-6) var(--gutter);
+  }
+  .how__steps li {
+    display: grid;
+    gap: var(--s-2);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--c-rule-strong);
+  }
+  .how__num {
+    font-family: var(--f-display);
+    font-size: var(--t-2xl);
+    line-height: 1;
+    color: var(--c-forest);
+  }
+  .how__steps h3 {
+    font-size: var(--t-lg);
+    font-family: var(--f-text);
+    font-weight: 650;
+  }
+  @media (min-width: 48rem) {
+    ol.how__steps {
+      grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    }
+  }
+  @media (min-width: 64rem) {
+    .how__intro {
+      grid-column: 1 / span 4;
+    }
+    .how__steps {
+      grid-column: 6 / -1;
+    }
+  }
+</style>

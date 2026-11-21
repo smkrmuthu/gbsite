@@ -1,0 +1,33 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import { shopUrl } from '@glazebrooke/brand/lib/links';
+---
+
+<MainLayout title="Page Not Found | Glazebrooke Coffee Estate" description="The page you were looking for could not be found. Try one of the links on this page instead." noindex>
+  <section class="section">
+    <div class="container notfound">
+      <h1 class="t-3xl">This page could not be found.</h1>
+      <p>The address may have changed when our website was redesigned. These pages are a good place to continue:</p>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/beyond-coffee/">Our brand</a></li>
+        <li><a href="/our-coffee/">Our coffee</a></li>
+        <li><a href={shopUrl('/')}>Glazebrooke shop</a></li>
+        <li><a href="/contact/">Contact</a></li>
+      </ul>
+    </div>
+  </section>
+</MainLayout>
+
+<style>
+  .notfound {
+    display: grid;
+    gap: var(--s-5);
+    max-width: 40rem;
+  }
+  .notfound ul {
+    padding-left: 1.1em;
+    display: grid;
+    gap: var(--s-2);
+  }
+</style>

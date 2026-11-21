@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.astro/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+# Raw crawl output from `npm run import:legacy` — review it, then commit only what you reuse.
+legacy-import/raw/

@@ -1,0 +1,105 @@
+---
+/**
+ * Illustrative hillside cross-section marking the band in which the estate's
+ * coffee grows. The profile is schematic (not surveyed terrain); the band
+ * comes from facts.elevationFeet. Renders nothing if that fact is withheld.
+ */
+import { elevationRange } from '../config/facts';
+
+interface Props {
+  class?: string;
+  tone?: 'light' | 'dark';
+  /** Unique id prefix if the diagram appears more than once on a page. */
+  id?: string;
+}
+const { class: className, tone = 'dark', id = 'elevation' } = Astro.props;
+const range = elevationRange();
+
+const W = 1000;
+const H = 420;
+const top = 30;
+const bottom = 380;
+const minFt = 2800;
+const maxFt = 4800;
+const y = (ft: number) => bottom - ((ft - minFt) / (maxFt - minFt)) * (bottom - top);
+
+// Schematic slope rising from left to right.
+const profile: [number, number][] = [];
+for (let x = 0; x <= W; x += 10) {
+  const t = x / W;
+  const ft = 2900 + 1800 * (0.5 - 0.5 * Math.cos(Math.PI * Math.min(1, t * 1.08))) + 60 * Math.sin(t * 19) + 35 * Math.sin(t * 47 + 1);
+  profile.push([x, y(ft)]);
+}
+const hill = `M0,${bottom + 40}` + profile.map(([x, py]) => `L${x},${py.toFixed(1)}`).join('') + `L${W},${bottom + 40}Z`;
+const ridge = 'M' + profile.map(([x, py]) => `${x},${py.toFixed(1)}`).join('L');
+const ticks = [3000, 3500, 4000, 4500];
+const colors =
+  tone === 'dark'
+    ? { hill: '#112c24', ridge: '#a9ad8f', band: '#d9c9ae', label: '#d9c9ae', tick: 'rgba(246,242,233,0.35)' }
+    : { hill: '#e7dfcd', ridge: '#5c6146', band: '#183c32', label: '#30231d', tick: 'rgba(48,35,29,0.28)' };
+---
+
+{
+  range && (
+    <figure class:list={['elevation', className]}>
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        role="img"
+        aria-labelledby={`${id}-title ${id}-desc`}
+      >
+        <title id={`${id}-title`}>Elevation of the coffee</title>
+        <desc id={`${id}-desc`}>
+          Schematic hillside showing the band between approximately {range.feet} ({range.metres}) above sea level, where the estate's coffee grows.
+        </desc>
+        <defs>
+          <clipPath id={`${id}-hill`}>
+            <path d={hill} />
+          </clipPath>
+        </defs>
+        {ticks.map((ft) => (
+          <g>
+            <line x1="56" x2={W} y1={y(ft)} y2={y(ft)} stroke={colors.tick} stroke-width="1" stroke-dasharray="2 6" />
+            <text x="0" y={y(ft) + 4} fill={colors.label} font-size="13" font-family="Manrope Variable, Manrope, sans-serif" opacity="0.8">
+              {ft.toLocaleString('en-IN')} ft
+            </text>
+          </g>
+        ))}
+        <path d={hill} fill={colors.hill} />
+        <rect x="0" y={y(range.max)} width={W} height={y(range.min) - y(range.max)} fill={colors.band} opacity="0.9" clip-path={`url(#${id}-hill)`} />
+        <path d={ridge} fill="none" stroke={colors.ridge} stroke-width="1.5" />
+        <line x1="56" x2={W} y1={y(range.max)} y2={y(range.max)} stroke={colors.band} stroke-width="1" />
+        <line x1="56" x2={W} y1={y(range.min)} y2={y(range.min)} stroke={colors.band} stroke-width="1" />
+      </svg>
+      <figcaption>
+        <span class="elevation__range">{range.feet}</span>
+        <span class="elevation__sub">
+          Approximate elevation of the coffee, about {range.metres} above sea level. Illustrative profile, not to scale.
+        </span>
+      </figcaption>
+    </figure>
+  )
+}
+
+<style>
+  .elevation svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .elevation figcaption {
+    display: grid;
+    gap: var(--s-2);
+    margin-top: var(--s-5);
+  }
+  .elevation__range {
+    font-family: var(--f-display);
+    font-size: var(--t-3xl);
+    line-height: 1;
+    color: var(--c-heading);
+  }
+  .elevation__sub {
+    font-size: var(--t-sm);
+    color: var(--c-text-muted);
+    max-width: 30rem;
+  }
+</style>

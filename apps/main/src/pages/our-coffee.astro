@@ -1,0 +1,138 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import BuyCoffee from '../components/BuyCoffee.astro';
+import Photo from '@glazebrooke/brand/components/Photo.astro';
+import Pending from '@glazebrooke/brand/components/Pending.astro';
+import { elevationRange } from '@glazebrooke/brand/config/facts';
+import { shopUrl } from '@glazebrooke/brand/lib/links';
+
+const elevation = elevationRange();
+---
+
+<MainLayout
+  title="Our Coffee: Estate-Grown Coffee from India | Glazebrooke Coffee Estate"
+  description="Glazebrooke coffee is estate-grown in Yercaud, in the Shevaroy Hills of Tamil Nadu. Learn where our coffee comes from and how to order it."
+>
+  <PageHero
+    title="Estate-grown coffee from Yercaud."
+    lede="Glazebrooke coffee is grown on the estate's own slopes in the Shevaroy Hills of Tamil Nadu. Learn where it comes from, then order it from the Glazebrooke shop."
+    photo="coffee-cherries"
+    tone="espresso"
+  >
+    <div class="actions hero-actions">
+      <a class="btn" href={shopUrl('/products/')} data-track="shop_click" data-track-label="our coffee hero">See the coffee in our shop</a>
+    </div>
+  </PageHero>
+
+  <section class="section surface-paper" aria-labelledby="origin-title">
+    <div class="container grid">
+      <h2 id="origin-title" class="origin__title">From the estate</h2>
+      <dl class="origin__list">
+        <div>
+          <dt>Grown at</dt>
+          <dd>Glazebrooke Coffee Estate</dd>
+        </div>
+        <div>
+          <dt>Region</dt>
+          <dd>Yercaud, Shevaroy Hills, Tamil Nadu, India</dd>
+        </div>
+        {
+          elevation && (
+            <div>
+              <dt>Elevation</dt>
+              <dd>Approximately {elevation.feet}</dd>
+            </div>
+          )
+        }
+      </dl>
+      <div class="origin__pending">
+        <Pending
+          title="Coffee details"
+          items={[
+            'Species and varieties (for example Arabica or Robusta, and cultivar names)',
+            'Processing method',
+            'Roast levels offered',
+            'Tasting notes, written or approved by the estate',
+          ]}
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="cup-title">
+    <div class="container grid">
+      <div class="cup__media">
+        <Photo slot="coffee-beans" tone="espresso" ratio="1 / 1" sizes="(min-width: 64rem) 45vw, 100vw" />
+      </div>
+      <div class="cup__text prose">
+        <h2 id="cup-title" class="t-2xl">From hillside to cup</h2>
+        <p>
+          Our coffee begins on the estate, so we can tell you where it was grown, at what elevation, and by whom.
+        </p>
+        <p>
+          The current range, pack sizes and prices are listed in the Glazebrooke shop. Each product page shows exactly how to place an order.
+        </p>
+        <a class="text-link" href={shopUrl('/products/')} data-track="shop_click" data-track-label="our coffee range link">Browse the range</a>
+      </div>
+    </div>
+  </section>
+
+  <BuyCoffee />
+</MainLayout>
+
+<style>
+  .hero-actions {
+    margin-top: var(--s-6);
+  }
+  .origin__title {
+    font-size: var(--t-2xl);
+  }
+  .origin__list {
+    display: grid;
+    gap: var(--s-4) var(--gutter);
+  }
+  .origin__list div {
+    display: grid;
+    gap: var(--s-1);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--c-rule-strong);
+  }
+  .origin__list dt {
+    font-size: var(--t-sm);
+    font-weight: 650;
+    color: var(--c-olive-ink);
+  }
+  .origin__list dd {
+    font-family: var(--f-display);
+    font-size: var(--t-xl);
+    color: var(--c-forest);
+    line-height: 1.25;
+  }
+  .cup__text {
+    align-self: center;
+  }
+  .cup__text > * + * {
+    margin-top: var(--s-5);
+  }
+  @media (min-width: 48rem) {
+    .origin__list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  @media (min-width: 64rem) {
+    .origin__title {
+      grid-column: 1 / span 4;
+    }
+    .origin__list,
+    .origin__pending {
+      grid-column: 1 / -1;
+    }
+    .cup__media {
+      grid-column: 1 / span 6;
+    }
+    .cup__text {
+      grid-column: 8 / span 5;
+    }
+  }
+</style>

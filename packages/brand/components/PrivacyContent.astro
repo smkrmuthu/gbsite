@@ -1,0 +1,84 @@
+---
+/**
+ * Privacy notice describing what THIS website actually does. It adapts to the
+ * configuration (analytics on/off, form endpoint vs email). Have it reviewed
+ * by the estate's adviser before launch.
+ */
+import { brand } from '../config/brand.config';
+import { GA4_ID } from '../lib/env';
+import { orderAction } from '../lib/links';
+import Pending from './Pending.astro';
+
+interface Props {
+  site: 'main' | 'shop';
+  contactHref: string;
+}
+const { site, contactHref } = Astro.props;
+const order = orderAction();
+const { formEndpoint, email } = brand.contact;
+---
+
+<div class="privacy prose">
+  <p class="muted small">Last updated: November 2026</p>
+
+  <h2>Who we are</h2>
+  <p>
+    This website is run by {brand.name}, {brand.location.locality}, {brand.location.region}, {brand.location.country}. If you have a question about
+    your information, please <a href={contactHref}>contact us</a>.
+  </p>
+
+  <h2>Browsing this site</h2>
+  <p>
+    {
+      GA4_ID
+        ? 'This site sets no cookies unless you allow analytics. If you choose "Allow analytics", we use Google Analytics 4 to understand how visitors use the site, such as which pages are viewed and which links are followed. Google processes this data on our behalf. You can change your choice at any time with "Cookie settings" in the footer.'
+        : 'This site does not use analytics or advertising cookies.'
+    }
+  </p>
+  <p>
+    We remember your analytics choice in your browser's local storage so that we do not ask again on every page. Our hosting provider may keep
+    standard server logs (such as IP address and pages requested) for security and reliability.
+  </p>
+
+  <h2>Contacting us</h2>
+  <p>
+    {
+      formEndpoint
+        ? 'When you send the contact form, the details you enter (name, email address, topic and message) are delivered to us through a form-handling service and used only to reply to you.'
+        : email
+          ? 'The contact form does not send anything itself: it opens your own email app with your message ready to send. Emails you send us are used only to reply to you.'
+          : 'When you contact us, we use your details only to reply to you.'
+    }
+  </p>
+
+  {
+    site === 'shop' && (
+      <>
+        <h2>Placing an order</h2>
+        <p>
+          {order?.channel === 'whatsapp'
+            ? 'Order buttons open WhatsApp with a message to the estate. Messages you send there are handled under WhatsApp’s own privacy policy, and we use the details you share only to arrange your order.'
+            : order?.channel === 'external'
+              ? `Order buttons take you to ${brand.ordering.externalLabel || 'our ordering partner'}, which handles your order under its own privacy policy.`
+              : 'This site does not take payments or store order details. We use the details you share when ordering only to arrange your order.'}
+        </p>
+      </>
+    )
+  }
+
+  <h2>Your choices</h2>
+  <p>
+    You can ask us what information we hold about you, and ask us to correct or delete it, by contacting us through the <a href={contactHref}
+      >contact page</a
+    >.
+  </p>
+
+  <Pending title="Review of this notice by the estate before launch" />
+</div>
+
+<style>
+  .privacy h2 {
+    font-size: var(--t-xl);
+    margin-top: var(--s-7);
+  }
+</style>

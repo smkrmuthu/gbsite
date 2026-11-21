@@ -1,0 +1,162 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import BuyCoffee from '../components/BuyCoffee.astro';
+import Photo from '@glazebrooke/brand/components/Photo.astro';
+import Pending from '@glazebrooke/brand/components/Pending.astro';
+import ElevationDiagram from '@glazebrooke/brand/components/ElevationDiagram.astro';
+import { elevationRange } from '@glazebrooke/brand/config/facts';
+import { brand } from '@glazebrooke/brand/config/brand.config';
+
+const elevation = elevationRange();
+const { location } = brand;
+
+const lede = `Glazebrooke lies in ${location.locality}, in the ${location.hills} of ${location.region}.${
+  elevation ? ` The estate's coffee grows at approximately ${elevation.feet} above sea level.` : ''
+}`;
+---
+
+<MainLayout
+  title="Our Estate: A Coffee Plantation in Yercaud | Glazebrooke Coffee Estate"
+  description="Glazebrooke Coffee Estate lies in Yercaud in Tamil Nadu's Shevaroy Hills, where our coffee grows on hillside slopes at elevation. Explore the estate."
+>
+  <PageHero title="Where nature shapes every bean." lede={lede} photo="estate-slopes" />
+
+  <section class="section surface-paper" aria-labelledby="place-title">
+    <div class="container grid">
+      <div class="place__text">
+        <h2 id="place-title" class="t-2xl">The place</h2>
+        <dl class="facts">
+          <div>
+            <dt>Location</dt>
+            <dd>{location.locality}, {location.district} district, {location.region}, {location.country}</dd>
+          </div>
+          <div>
+            <dt>Hills</dt>
+            <dd>{location.hills}, Eastern Ghats</dd>
+          </div>
+          {
+            elevation && (
+              <div>
+                <dt>Elevation</dt>
+                <dd>
+                  Approximately {elevation.feet} ({elevation.metres})
+                </dd>
+              </div>
+            )
+          }
+        </dl>
+        <Pending title="Estate details" items={['Estate area', 'Postal address and map link', 'Annual rainfall or climate notes, if recorded']} />
+      </div>
+      <div class="place__figure">
+        <ElevationDiagram tone="light" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="growing-title">
+    <div class="container grid">
+      <div class="growing__media">
+        <Photo slot="estate-shevaroy-view" tone="olive" ratio="3 / 2" sizes="(min-width: 64rem) 58vw, 100vw" />
+      </div>
+      <div class="growing__text prose">
+        <h2 id="growing-title" class="t-2xl">The growing environment</h2>
+        <p>
+          Elevation shapes coffee. Cooler hill air slows the ripening of the coffee cherry, which is one reason coffee from the hills of
+          southern India is valued.
+        </p>
+        <p>On the estate, slope, soil and season all play their part in each year's harvest.</p>
+        <Pending
+          title="How coffee grows at Glazebrooke"
+          items={['Coffee species and varieties grown', 'Harvest season and how the cherry is picked', 'How the coffee is processed and dried']}
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="section surface-beige" aria-labelledby="nature-title">
+    <div class="container grid">
+      <div class="nature__text prose">
+        <h2 id="nature-title" class="t-2xl">Natural surroundings</h2>
+        <p>
+          The Shevaroy Hills are a living landscape of forest, streams and farmland. The estate shares its hillside with that wider world, and
+          its coffee depends on it.
+        </p>
+        <Pending
+          title="Biodiversity on the estate"
+          items={[
+            'Shade trees found on the estate',
+            'Other crops grown alongside the coffee, if any',
+            'Birds and wildlife regularly seen',
+            'Streams, springs or other water sources',
+          ]}
+        />
+        <a class="text-link" href="/sustainability/">How we look after the land</a>
+      </div>
+      <div class="nature__media">
+        <Photo slot="estate-nature" tone="forest" ratio="4 / 5" sizes="(min-width: 64rem) 40vw, 100vw" />
+      </div>
+    </div>
+  </section>
+
+  <BuyCoffee />
+</MainLayout>
+
+<style>
+  .place__text {
+    display: grid;
+    gap: var(--s-6);
+    align-content: start;
+  }
+  .facts {
+    display: grid;
+    gap: var(--s-4);
+  }
+  .facts div {
+    display: grid;
+    gap: var(--s-1);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--c-rule-strong);
+  }
+  .facts dt {
+    font-size: var(--t-sm);
+    font-weight: 650;
+    color: var(--c-olive-ink);
+  }
+  .facts dd {
+    font-family: var(--f-display);
+    font-size: var(--t-xl);
+    color: var(--c-forest);
+    line-height: 1.25;
+  }
+  .growing__text,
+  .nature__text {
+    align-self: center;
+  }
+  .growing__text > * + *,
+  .nature__text > * + * {
+    margin-top: var(--s-5);
+  }
+
+  @media (min-width: 64rem) {
+    .place__text {
+      grid-column: 1 / span 4;
+    }
+    .place__figure {
+      grid-column: 6 / -1;
+      align-self: center;
+    }
+    .growing__media {
+      grid-column: 1 / span 7;
+    }
+    .growing__text {
+      grid-column: 9 / span 4;
+    }
+    .nature__text {
+      grid-column: 1 / span 5;
+    }
+    .nature__media {
+      grid-column: 8 / -1;
+    }
+  }
+</style>

@@ -1,0 +1,77 @@
+---
+import ShopLayout from '../layouts/ShopLayout.astro';
+import ContactDetails from '@glazebrooke/brand/components/ContactDetails.astro';
+import ContactForm from '@glazebrooke/brand/components/ContactForm.astro';
+import { orderAction } from '@glazebrooke/brand/lib/links';
+
+const order = orderAction();
+---
+
+<ShopLayout
+  title="Contact the Glazebrooke Coffee Shop | Orders and Product Questions"
+  description="Questions about Glazebrooke coffee or an order? Contact the Glazebrooke Coffee shop, run by Glazebrooke Coffee Estate in Yercaud, Tamil Nadu."
+>
+  <section class="section contact">
+    <div class="container grid">
+      <div class="contact__intro">
+        <h1 class="t-3xl">Questions about our coffee or an order?</h1>
+        {
+          order && (
+            <div class="contact__order">
+              <p>The quickest way to order is directly from a product page. You can also start an order here.</p>
+              <a
+                class="btn"
+                href={order.href}
+                data-track="order_click"
+                data-track-label="contact page"
+                {...(order.newTab ? { target: '_blank', rel: 'noopener' } : {})}
+              >
+                {order.label}
+                {order.newTab && <span class="visually-hidden"> (opens in a new tab)</span>}
+              </a>
+              <p class="small muted">{order.explains}</p>
+            </div>
+          )
+        }
+        <ContactDetails />
+      </div>
+      <div class="contact__form">
+        <h2 class="t-2xl">Send us a message</h2>
+        <ContactForm topics={['Ordering coffee', 'A product question', 'Trade and wholesale', 'Something else']} idPrefix="shop-contact" />
+      </div>
+    </div>
+  </section>
+</ShopLayout>
+
+<style>
+  .contact {
+    padding-top: var(--s-9);
+  }
+  .contact__intro {
+    display: grid;
+    gap: var(--s-7);
+    align-content: start;
+  }
+  .contact__order {
+    display: grid;
+    gap: var(--s-3);
+    justify-items: start;
+    max-width: 30rem;
+  }
+  .contact__form {
+    display: grid;
+    gap: var(--s-6);
+    align-content: start;
+  }
+  @media (min-width: 64rem) {
+    .contact__intro {
+      grid-column: 1 / span 6;
+    }
+    .contact__form {
+      grid-column: 8 / -1;
+      padding: var(--s-7);
+      background: var(--c-paper);
+      border: 1px solid var(--c-rule);
+    }
+  }
+</style>

@@ -1,0 +1,51 @@
+---
+/**
+ * Typographic wordmark. A placeholder for the official Glazebrooke logo:
+ * once `brand.logoPath` is set, the logo image is used instead.
+ */
+import { brand } from '../config/brand.config';
+
+interface Props {
+  descriptor?: string;
+  class?: string;
+}
+const { descriptor = 'Coffee Estate', class: className } = Astro.props;
+---
+
+{
+  brand.logoPath ? (
+    <img class:list={['wordmark-logo', className]} src={brand.logoPath} alt="" width="180" height="48" />
+  ) : (
+    <span class:list={['wordmark', className]} aria-hidden="true">
+      <span class="wordmark__name">Glazebrooke</span>
+      <span class="wordmark__sub">{descriptor}</span>
+    </span>
+  )
+}
+
+<style>
+  .wordmark {
+    display: inline-flex;
+    flex-direction: column;
+    line-height: 1;
+    color: currentColor;
+  }
+  .wordmark__name {
+    font-family: var(--f-display);
+    font-size: 1.75rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+  .wordmark__sub {
+    margin-top: 0.3rem;
+    font-family: var(--f-text);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    opacity: 0.8;
+  }
+  .wordmark-logo {
+    height: 2.75rem;
+    width: auto;
+  }
+</style>

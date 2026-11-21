@@ -1,0 +1,210 @@
+---
+/**
+ * "Our brand" — kept at /beyond-coffee/, the URL of the previous site's
+ * primary brand page, so existing links and search equity are preserved.
+ */
+import MainLayout from '../layouts/MainLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import BuyCoffee from '../components/BuyCoffee.astro';
+import Photo from '@glazebrooke/brand/components/Photo.astro';
+import Pending from '@glazebrooke/brand/components/Pending.astro';
+import { fact } from '@glazebrooke/brand/config/facts';
+
+const established = fact('established');
+const years = fact('heritageYears');
+const family = fact('familyOwned');
+
+const title = years ? 'More than seven decades. One passion. Coffee.' : 'One passion. Coffee.';
+const lede = [
+  `Glazebrooke Coffee Estate${established ? ` was established in the ${established}` : ' grows coffee'} in Yercaud, in the Shevaroy Hills of Tamil Nadu.`,
+  family ? ' It is family-owned' : '',
+  family && years ? `, and coffee has been its work for more than ${years} years.` : family ? '.' : '',
+].join('');
+
+const values = [
+  {
+    term: 'Care',
+    text: 'Coffee is a long-lived plant and an estate is a long-term undertaking. We look after the land with the next generation in mind.',
+  },
+  {
+    term: 'Quality',
+    text: 'Every bag carries the Glazebrooke name, so every bag has to be worthy of it.',
+  },
+  {
+    term: 'Authenticity',
+    text: 'We tell the story of our coffee as it is: where it grows, who grows it and how. Nothing more, nothing less.',
+  },
+  {
+    term: 'Nature',
+    text: 'The estate is part of a wider hill landscape, and our coffee depends on that landscape staying healthy.',
+  },
+];
+---
+
+<MainLayout
+  title="Our Brand: Coffee Heritage in Yercaud | Glazebrooke Coffee Estate"
+  description="The story behind Glazebrooke Coffee Estate: a family-owned coffee estate in Yercaud, Tamil Nadu, and the values that guide how we grow coffee."
+>
+  <PageHero title={title} lede={lede} photo="heritage-archive" tone="espresso" />
+
+  <section class="section surface-paper" aria-labelledby="beyond-title">
+    <div class="container grid">
+      <h2 id="beyond-title" class="beyond__title">Beyond coffee</h2>
+      <div class="beyond__body">
+        <p class="lede">
+          A cup of Glazebrooke carries more than flavour. It carries a place, the people who grow it, and the seasons that shaped it.
+        </p>
+        <p class="beyond__note">That is what we mean by beyond coffee, and it is the story this site sets out to tell.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section heritage" aria-labelledby="heritage-title">
+    <div class="container grid">
+      <div class="heritage__media">
+        <Photo slot="heritage-family" tone="beige" ratio="3 / 4" sizes="(min-width: 64rem) 40vw, 100vw" />
+      </div>
+      <div class="heritage__text prose">
+        <h2 id="heritage-title" class="t-2xl">Our heritage</h2>
+        <p>
+          {
+            established
+              ? `Coffee has been grown at Glazebrooke since the ${established}.`
+              : 'Coffee has long been grown at Glazebrooke.'
+          }
+          {family ? ' The estate remains family-owned today.' : ''}
+        </p>
+        <Pending
+          title="The family story"
+          items={[
+            'Who founded the estate, and the year it was established',
+            'How the estate has passed through the family',
+            'Key moments: first harvests, replanting, new ventures',
+            'Archival photographs, with dates and permission to publish',
+          ]}
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="section surface-beige" aria-labelledby="yercaud-title">
+    <div class="container grid">
+      <h2 id="yercaud-title" class="yercaud__title">Rooted in Yercaud</h2>
+      <div class="yercaud__text prose">
+        <p>
+          Yercaud is a hill station in the Shevaroy Hills, part of the Eastern Ghats in the Salem district of Tamil Nadu. Coffee has been
+          cultivated in these hills for generations.
+        </p>
+        <p>Glazebrooke belongs to that landscape and to that tradition.</p>
+        <a class="text-link" href="/our-estate/">Explore the estate</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="values-title">
+    <div class="container grid">
+      <div class="values__intro">
+        <h2 id="values-title">What guides us</h2>
+      </div>
+      <dl class="values__list">
+        {
+          values.map((v) => (
+            <div class="values__item">
+              <dt>{v.term}</dt>
+              <dd>{v.text}</dd>
+            </div>
+          ))
+        }
+      </dl>
+      <div class="values__pending">
+        <Pending title="Confirm these values in the family's own words" />
+      </div>
+    </div>
+  </section>
+
+  <BuyCoffee />
+</MainLayout>
+
+<style>
+  .beyond__title {
+    font-size: var(--t-xl);
+    font-family: var(--f-text);
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+  .beyond__body {
+    display: grid;
+    gap: var(--s-6);
+  }
+  .beyond__body .lede {
+    font-size: var(--t-3xl);
+    line-height: 1.12;
+    max-width: 17em;
+  }
+  .beyond__note {
+    max-width: 30rem;
+    color: var(--c-text-muted);
+  }
+
+  .heritage__text {
+    align-self: center;
+  }
+  .heritage__text > * + * {
+    margin-top: var(--s-5);
+  }
+
+  .values__list {
+    display: grid;
+    gap: var(--s-6) var(--gutter);
+  }
+  .values__item {
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--c-rule-strong);
+  }
+  .values__item dt {
+    font-family: var(--f-display);
+    font-size: var(--t-xl);
+    color: var(--c-forest);
+    margin-bottom: var(--s-2);
+  }
+  .values__item dd {
+    max-width: 26rem;
+  }
+
+  @media (min-width: 48rem) {
+    .values__list {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 64rem) {
+    .beyond__title {
+      grid-column: 1 / span 3;
+      padding-top: 1rem;
+    }
+    .beyond__body {
+      grid-column: 4 / span 9;
+    }
+    .heritage__media {
+      grid-column: 1 / span 5;
+    }
+    .heritage__text {
+      grid-column: 7 / span 5;
+    }
+    .yercaud__title {
+      grid-column: 1 / span 6;
+    }
+    .yercaud__text {
+      grid-column: 8 / span 5;
+      align-self: end;
+    }
+    .values__intro {
+      grid-column: 1 / span 4;
+    }
+    .values__list {
+      grid-column: 5 / span 8;
+    }
+    .values__pending {
+      grid-column: 5 / span 8;
+    }
+  }
+</style>

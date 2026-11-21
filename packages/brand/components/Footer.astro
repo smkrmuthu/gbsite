@@ -1,0 +1,200 @@
+---
+import Wordmark from './Wordmark.astro';
+import { brand } from '../config/brand.config';
+import { fact } from '../config/facts';
+import { GA4_ID } from '../lib/env';
+import { mailto, tel, socialLabel } from '../lib/links';
+import type { NavItem } from './Header.astro';
+
+interface Props {
+  descriptor?: string;
+  nav: NavItem[];
+  /** Link to the sister site (shop ↔ estate). */
+  crossLink: NavItem & { note: string; track?: string };
+  contactHref: string;
+  privacyHref: string;
+}
+const { descriptor, nav, crossLink, contactHref, privacyHref } = Astro.props;
+const { contact, social, location } = brand;
+const year = new Date().getFullYear();
+const familyOwned = fact('familyOwned');
+---
+
+<footer class="site-footer surface-forest on-dark">
+  <div class="container">
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <a href="/" class="site-footer__home" aria-label={`${brand.name} home`}>
+          <Wordmark descriptor={descriptor} />
+        </a>
+        <p class="site-footer__about">
+          {familyOwned ? 'A family-owned coffee estate' : 'A coffee estate'} in {location.locality}, {location.hills}, {location.region}, {location.country}.
+        </p>
+      </div>
+
+      <nav class="site-footer__col" aria-label="Footer">
+        <h2 class="site-footer__heading">Explore</h2>
+        <ul>
+          {
+            nav.map((item) => (
+              <li>
+                <a href={item.href}>{item.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div class="site-footer__col">
+        <h2 class="site-footer__heading">Contact</h2>
+        <ul>
+          {
+            contact.email && (
+              <li>
+                <a href={mailto(contact.email)} data-track="contact_click" data-track-label="footer email">
+                  {contact.email}
+                </a>
+              </li>
+            )
+          }
+          {
+            contact.phone && (
+              <li>
+                <a href={tel(contact.phone)} data-track="contact_click" data-track-label="footer phone">
+                  {contact.phone}
+                </a>
+              </li>
+            )
+          }
+          <li><a href={contactHref}>Contact page</a></li>
+        </ul>
+        {
+          social.length > 0 && (
+            <>
+              <h2 class="site-footer__heading site-footer__heading--spaced">Follow</h2>
+              <ul>
+                {social.map((s) => (
+                  <li>
+                    <a href={s.url} rel="me noopener" target="_blank">
+                      {socialLabel[s.network] ?? s.network}
+                      <span class="visually-hidden"> (opens in a new tab)</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )
+        }
+      </div>
+
+      <div class="site-footer__col">
+        <h2 class="site-footer__heading">{crossLink.label}</h2>
+        <p class="site-footer__note">{crossLink.note}</p>
+        <a class="btn btn--ghost-light site-footer__cross" href={crossLink.href} data-track={crossLink.track}>
+          {crossLink.label}
+        </a>
+      </div>
+    </div>
+
+    <div class="site-footer__base">
+      <p>© {year} {brand.name}</p>
+      <ul>
+        <li><a href={privacyHref}>Privacy</a></li>
+        {
+          GA4_ID && (
+            <li>
+              <button type="button" class="site-footer__linkbtn" data-consent-open hidden>
+                Cookie settings
+              </button>
+            </li>
+          )
+        }
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    padding-block: var(--s-9) var(--s-6);
+    font-size: var(--t-sm);
+  }
+  .site-footer a {
+    color: var(--c-cream);
+    text-decoration: none;
+  }
+  .site-footer a:hover {
+    text-decoration: underline;
+  }
+  .site-footer__grid {
+    display: grid;
+    gap: var(--s-7) var(--gutter);
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  }
+  @media (min-width: 64rem) {
+    .site-footer__grid {
+      grid-template-columns: 1.6fr 1fr 1fr 1.3fr;
+    }
+  }
+  .site-footer__home {
+    display: inline-block;
+    color: var(--c-cream);
+  }
+  .site-footer__about {
+    margin-top: var(--s-5);
+    max-width: 22rem;
+    color: var(--c-sage);
+  }
+  .site-footer__heading {
+    font-family: var(--f-text);
+    font-size: var(--t-sm);
+    font-weight: 650;
+    color: var(--c-beige);
+    letter-spacing: 0;
+    margin-bottom: var(--s-4);
+  }
+  .site-footer__heading--spaced {
+    margin-top: var(--s-6);
+  }
+  .site-footer ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--s-2);
+  }
+  .site-footer__note {
+    color: var(--c-sage);
+    max-width: 20rem;
+  }
+  .site-footer__cross {
+    margin-top: var(--s-5);
+  }
+  .site-footer__cross:hover {
+    text-decoration: none !important;
+    color: var(--c-forest) !important;
+  }
+  .site-footer__base {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--s-4);
+    margin-top: var(--s-9);
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--c-rule);
+    color: var(--c-sage);
+  }
+  .site-footer__base ul {
+    display: flex;
+    gap: var(--s-5);
+  }
+  .site-footer__linkbtn {
+    padding: 0;
+    background: none;
+    border: 0;
+    color: var(--c-cream);
+    font-size: inherit;
+  }
+  .site-footer__linkbtn:hover {
+    text-decoration: underline;
+  }
+</style>

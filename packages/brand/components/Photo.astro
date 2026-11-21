@@ -1,0 +1,105 @@
+---
+/**
+ * Responsive photo slot. If `packages/brand/photos/<slot>.<ext>` exists, it is
+ * rendered as an optimised <picture> (AVIF/WebP/JPEG). Otherwise a contour-line
+ * placeholder is shown, captioned as a placeholder (unless
+ * PUBLIC_HIDE_PLACEHOLDERS=true). See config/photos.ts and IMAGE-ASSETS.md.
+ */
+import { Picture } from 'astro:assets';
+import ContourArt from './ContourArt.astro';
+import { photoSlots, type PhotoKey } from '../config/photos';
+import { HIDE_PLACEHOLDERS } from '../lib/env';
+import { findPhoto } from '../lib/photos';
+
+interface Props {
+  slot: PhotoKey;
+  /** Override the slot's alt text (pass '' for a purely decorative photo). */
+  alt?: string;
+  /** Placeholder brief override (used by product slots). */
+  brief?: string;
+  sizes?: string;
+  widths?: number[];
+  /** Set true for the above-the-fold hero image. */
+  priority?: boolean;
+  ratio?: string;
+  tone?: 'forest' | 'espresso' | 'beige' | 'cream' | 'olive';
+  class?: string;
+  /** Hide the placeholder caption even when placeholders are visible. */
+  quiet?: boolean;
+}
+
+const {
+  slot,
+  alt,
+  brief,
+  sizes = '(min-width: 64rem) 50vw, 100vw',
+  widths = [480, 800, 1200, 1600, 2000],
+  priority = false,
+  ratio = '4 / 5',
+  tone = 'forest',
+  class: className,
+  quiet = false,
+} = Astro.props;
+
+const image = findPhoto(slot);
+const meta = (photoSlots as Record<string, { alt: string; brief: string }>)[slot];
+const altText = alt ?? meta?.alt ?? '';
+const placeholderBrief = brief ?? meta?.brief ?? 'photograph';
+const usableWidths = image ? widths.filter((w) => w <= image.width).concat(widths.some((w) => w > image.width) ? [image.width] : []) : [];
+---
+
+<figure class:list={['photo', className, { 'photo--placeholder': !image }]} style={`--ratio:${ratio}`}>
+  {
+    image ? (
+      <Picture
+        src={image}
+        alt={altText}
+        formats={['avif', 'webp']}
+        widths={[...new Set(usableWidths)]}
+        sizes={sizes}
+        loading={priority ? 'eager' : 'lazy'}
+        fetchpriority={priority ? 'high' : 'auto'}
+        decoding={priority ? 'sync' : 'async'}
+        quality={78}
+      />
+    ) : (
+      <>
+        <ContourArt seed={slot} tone={tone} />
+        {!HIDE_PLACEHOLDERS && !quiet && (
+          <figcaption class="photo__note">
+            <span class="visually-hidden">Image placeholder. </span>
+            Photograph to come: {placeholderBrief}
+          </figcaption>
+        )}
+      </>
+    )
+  }
+</figure>
+
+<style>
+  .photo {
+    position: relative;
+    aspect-ratio: var(--ratio);
+    overflow: hidden;
+    background: var(--c-beige);
+  }
+  .photo :global(img),
+  .photo :global(picture),
+  .photo :global(svg) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .photo__note {
+    position: absolute;
+    left: var(--s-3);
+    bottom: var(--s-3);
+    max-width: calc(100% - var(--s-5));
+    padding: 0.3rem 0.6rem;
+    background: rgb(246 242 233 / 0.92);
+    color: var(--c-espresso);
+    font-family: var(--f-text);
+    font-size: var(--t-xs);
+    line-height: 1.35;
+  }
+</style>

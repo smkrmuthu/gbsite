@@ -1,0 +1,22 @@
+---
+import ShopLayout from '../layouts/ShopLayout.astro';
+import PrivacyContent from '@glazebrooke/brand/components/PrivacyContent.astro';
+---
+
+<ShopLayout
+  title="Privacy Notice | Glazebrooke Coffee Shop"
+  description="How the Glazebrooke Coffee shop website handles analytics, cookies, orders and the information you send us."
+>
+  <section class="section">
+    <div class="container">
+      <h1 class="t-3xl">Privacy notice</h1>
+      <div class="body"><PrivacyContent site="shop" contactHref="/contact/" /></div>
+    </div>
+  </section>
+</ShopLayout>
+
+<style>
+  .body {
+    margin-top: var(--s-7);
+  }
+</style>

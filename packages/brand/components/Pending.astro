@@ -1,0 +1,62 @@
+---
+/**
+ * Visible "to be supplied" note for content the estate still needs to provide.
+ * Hidden entirely when PUBLIC_HIDE_PLACEHOLDERS=true. Every Pending block is
+ * also listed in README.md → "Content still needed from the estate".
+ */
+import { HIDE_PLACEHOLDERS } from '../lib/env';
+
+interface Props {
+  /** What is missing, in one short phrase. */
+  title: string;
+  items?: string[];
+  class?: string;
+}
+const { title, items = [], class: className } = Astro.props;
+---
+
+{
+  !HIDE_PLACEHOLDERS && (
+    <aside class:list={['pending', className]} aria-label={`Content to be supplied: ${title}`}>
+      <p class="pending__title">
+        <span class="pending__tag">To be supplied by the estate</span>
+        {title}
+      </p>
+      {items.length > 0 && (
+        <ul>
+          {items.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      )}
+      <slot />
+    </aside>
+  )
+}
+
+<style>
+  .pending {
+    max-width: var(--measure);
+    padding: var(--s-5);
+    border: 1px dashed var(--c-olive);
+    color: var(--c-text);
+    font-size: var(--t-sm);
+    line-height: 1.55;
+  }
+  .pending__title {
+    font-weight: 600;
+  }
+  .pending__tag {
+    display: block;
+    font-weight: 500;
+    color: var(--c-text-muted);
+    margin-bottom: var(--s-1);
+  }
+  .pending ul {
+    margin-top: var(--s-3);
+    padding-left: 1.1em;
+  }
+  .pending li + li {
+    margin-top: var(--s-1);
+  }
+</style>

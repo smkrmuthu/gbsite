@@ -1,0 +1,151 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import BuyCoffee from '../components/BuyCoffee.astro';
+import Photo from '@glazebrooke/brand/components/Photo.astro';
+import Pending from '@glazebrooke/brand/components/Pending.astro';
+
+/**
+ * Each area states why it matters (general, uncontroversial) and leaves the
+ * estate's actual practice as a Pending note. Do not add practices,
+ * certifications or measured results unless the estate can evidence them.
+ */
+const areas = [
+  {
+    title: 'Soil',
+    why: 'Healthy soil holds water, feeds the coffee and keeps a hillside in place.',
+    ask: 'How soil health is maintained on the estate',
+  },
+  {
+    title: 'Water',
+    why: 'In the hills, water is shared by the estate, the forest and the communities below.',
+    ask: 'How water is sourced, used and protected',
+  },
+  {
+    title: 'Trees',
+    why: 'Trees shelter the land from sun and heavy rain and give a home to birds and insects.',
+    ask: 'Trees on the estate and any planting or protection',
+  },
+  {
+    title: 'Wildlife',
+    why: 'A working estate can be part of a living landscape rather than a gap in it.',
+    ask: 'Wildlife on the estate and how it is protected',
+  },
+  {
+    title: 'People',
+    why: 'Sustainability includes the wellbeing of the people who work the land.',
+    ask: 'Commitments to the estate team and local community',
+  },
+];
+---
+
+<MainLayout
+  title="Sustainability: Growing Coffee, Preserving Nature | Glazebrooke"
+  description="How Glazebrooke Coffee Estate thinks about soil, water, trees, wildlife and people in the Shevaroy Hills of Yercaud, where our coffee grows."
+>
+  <PageHero
+    title="Growing coffee. Preserving nature."
+    lede="An estate on a hillside depends on the land around it. We see looking after the soil, water, trees and wildlife as part of growing coffee, not separate from it."
+    photo="estate-water-soil"
+    tone="olive"
+  />
+
+  <section class="section surface-paper" aria-labelledby="approach-title">
+    <div class="container grid">
+      <div class="approach__intro">
+        <h2 id="approach-title">What we look after</h2>
+        <p class="muted">Five areas where coffee growing and the health of the land meet.</p>
+      </div>
+      <ul class="areas" role="list">
+        {
+          areas.map((a) => (
+            <li class="area">
+              <h3>{a.title}</h3>
+              <p>{a.why}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="approach__pending">
+        <Pending title="Practices on the estate, for each area above" items={areas.map((a) => a.ask)}>
+          <p class="pending-extra">
+            Also: any certifications actually held (with certificate details), and any measured results. Publish only what the estate can show.
+          </p>
+        </Pending>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="landscape-title">
+    <div class="container grid">
+      <div class="landscape__media">
+        <Photo slot="estate-nature" tone="forest" ratio="3 / 2" sizes="(min-width: 64rem) 58vw, 100vw" />
+      </div>
+      <div class="landscape__text prose">
+        <h2 id="landscape-title" class="t-2xl">Coexisting with the hills</h2>
+        <p>
+          The Shevaroy Hills were here long before the coffee, and they will be here long after this harvest. Our aim is to leave the
+          estate in good health for the generations that follow.
+        </p>
+        <a class="text-link" href="/our-estate/">Explore the estate</a>
+      </div>
+    </div>
+  </section>
+
+  <BuyCoffee />
+</MainLayout>
+
+<style>
+  .approach__intro {
+    display: grid;
+    gap: var(--s-4);
+    align-content: start;
+  }
+  .areas {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--s-6) var(--gutter);
+  }
+  .area {
+    display: grid;
+    gap: var(--s-2);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--c-rule-strong);
+  }
+  .area h3 {
+    font-size: var(--t-xl);
+  }
+  .area p {
+    max-width: 24rem;
+  }
+  .pending-extra {
+    margin-top: var(--s-3);
+  }
+  .landscape__text {
+    align-self: center;
+  }
+  .landscape__text > * + * {
+    margin-top: var(--s-5);
+  }
+  @media (min-width: 48rem) {
+    .areas {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 64rem) {
+    .approach__intro {
+      grid-column: 1 / span 4;
+    }
+    .areas,
+    .approach__pending {
+      grid-column: 5 / span 8;
+    }
+    .landscape__media {
+      grid-column: 1 / span 7;
+    }
+    .landscape__text {
+      grid-column: 9 / span 4;
+    }
+  }
+</style>

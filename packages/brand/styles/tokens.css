@@ -1,0 +1,64 @@
+/*
+ * Glazebrooke design tokens — shared by the brand site and the shop.
+ * Palette: "Nature Luxury". Contrast ratios noted are against --c-cream
+ * unless stated; all text pairs used meet WCAG 2.1 AA.
+ */
+:root {
+  /* Core palette */
+  --c-forest: #183c32;        /* 10.9:1 — headings, primary actions */
+  --c-forest-deep: #112c24;
+  --c-espresso: #30231d;      /* 13.6:1 — body text */
+  --c-cream: #f6f2e9;         /* page background */
+  --c-paper: #fbf9f4;         /* raised surfaces */
+  --c-beige: #d9c9ae;         /* 7.5:1 on forest; panels, rules */
+  --c-olive: #858b69;         /* decorative linework only (3.2:1) */
+  --c-olive-ink: #5c6146;     /* 5.8:1 — small secondary text */
+  --c-sage: #a9ad8f;          /* 5.2:1 on forest — linework/text on dark */
+  --c-white: #ffffff;
+
+  /* Roles */
+  --c-text: var(--c-espresso);
+  --c-text-muted: #6b5e52;    /* 5.6:1 */
+  --c-heading: var(--c-forest);
+  --c-bg: var(--c-cream);
+  --c-rule: rgb(48 35 29 / 0.16);
+  --c-rule-strong: rgb(48 35 29 / 0.32);
+  --c-focus: #183c32;
+
+  /* Type */
+  --f-display: 'Cormorant Garamond', 'Cormorant', 'EB Garamond', Garamond, 'Times New Roman', serif;
+  --f-text: 'Manrope Variable', 'Manrope', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Fluid type scale (approx. classical scale: 13 · 15 · 17 · 20 · 24–30 · 32–48 · 40–72 · 48–116) */
+  --t-xs: 0.8125rem;
+  --t-sm: 0.9375rem;
+  --t-base: 1.0625rem;
+  --t-lg: 1.25rem;
+  --t-xl: clamp(1.5rem, 1.25rem + 0.9vw, 1.875rem);
+  --t-2xl: clamp(2rem, 1.45rem + 2.2vw, 3rem);
+  --t-3xl: clamp(2.5rem, 1.6rem + 3.6vw, 4.5rem);
+  --t-4xl: clamp(3rem, 1.2rem + 7.2vw, 7.25rem);
+
+  /* Space */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4rem;
+  --s-9: 6rem;
+  --s-section: clamp(4.5rem, 2.5rem + 8vw, 10rem);
+
+  /* Layout */
+  --gutter: clamp(1rem, 0.4rem + 2.6vw, 3rem);
+  --max-width: 88rem;
+  --measure: 34rem;
+  --header-h: 4.25rem;
+  --radius: 2px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur: 220ms;
+}

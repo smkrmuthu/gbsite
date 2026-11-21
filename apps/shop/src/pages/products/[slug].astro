@@ -1,0 +1,281 @@
+---
+import { getImage } from 'astro:assets';
+import ShopLayout from '../../layouts/ShopLayout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import OrderPanel from '../../components/OrderPanel.astro';
+import Breadcrumbs from '@glazebrooke/brand/components/Breadcrumbs.astro';
+import Photo from '@glazebrooke/brand/components/Photo.astro';
+import Pending from '@glazebrooke/brand/components/Pending.astro';
+import { breadcrumbSchema, ORG_ID } from '@glazebrooke/brand/lib/seo';
+import { findPhoto } from '@glazebrooke/brand/lib/photos';
+import { brand } from '@glazebrooke/brand/config/brand.config';
+import { products, isPublished, formatPrice, type Product } from '../../data/products';
+
+export function getStaticPaths() {
+  return products.map((product) => ({ params: { slug: product.slug }, props: { product } }));
+}
+
+const { product } = Astro.props as { product: Product };
+const base = Astro.site!;
+const url = new URL(`/products/${product.slug}/`, base).href;
+const published = isPublished(product);
+
+const crumbs = [
+  { name: 'Shop', href: '/' },
+  { name: 'All coffee', href: '/products/' },
+  { name: product.name, href: `/products/${product.slug}/` },
+];
+
+const details = [
+  ['Origin', product.origin],
+  ['Species', product.species],
+  ['Process', product.process],
+  ['Roast', product.roast],
+  ['Form', product.form],
+  ['Packaging', product.packaging],
+].filter((d): d is [string, string] => !!d[1]);
+
+// Share image + schema image from the product photo, when one exists.
+const photo = findPhoto(product.photo);
+const shareImage = photo ? await getImage({ src: photo, width: 1200, height: 630, fit: 'cover', format: 'jpg' }) : undefined;
+const schemaImage = photo ? await getImage({ src: photo, width: 1200, format: 'jpg' }) : undefined;
+
+/** Product structured data from confirmed fields only. Offers only when a price is set. */
+const offers = product.variants
+  .filter((v) => v.price)
+  .map((v) => ({
+    '@type': 'Offer',
+    name: v.label,
+    ...(v.sku ? { sku: v.sku } : {}),
+    price: v.price!.amount,
+    priceCurrency: v.price!.currency,
+    url,
+    seller: { '@id': ORG_ID },
+    ...(v.availability
+      ? { availability: { in_stock: 'https://schema.org/InStock', out_of_stock: 'https://schema.org/OutOfStock', preorder: 'https://schema.org/PreOrder' }[v.availability] }
+      : {}),
+  }));
+
+const productSchema = published
+  ? [
+      {
+        '@type': 'Product',
+        '@id': `${url}#product`,
+        name: product.name,
+        description: [product.summary, ...product.description].join(' '),
+        url,
+        brand: { '@type': 'Brand', name: brand.shortName },
+        manufacturer: { '@id': ORG_ID },
+        ...(schemaImage ? { image: new URL(schemaImage.src, base).href } : {}),
+        ...(product.variants.length === 1 && product.variants[0].sku ? { sku: product.variants[0].sku } : {}),
+        ...(offers.length ? { offers } : {}),
+      },
+    ]
+  : [];
+
+const others = products.filter((p) => p.slug !== product.slug).slice(0, 3);
+const description = published
+  ? `${product.summary} Estate-grown at Glazebrooke Coffee Estate, Yercaud, Tamil Nadu.`.slice(0, 160)
+  : `Placeholder product page (${product.slug}) for the Glazebrooke Coffee shop. Details will be published once confirmed by the estate.`;
+---
+
+<ShopLayout
+  title={published ? `${product.name} | Glazebrooke Estate Coffee` : `Placeholder product (${product.slug}) | Glazebrooke Coffee Shop`}
+  description={description}
+  ogType="product"
+  image={shareImage?.src}
+  imageAlt={product.photoAlt ?? product.name}
+  noindex={!published}
+  schema={[breadcrumbSchema(crumbs.map((c) => ({ name: c.name, url: new URL(c.href, base).href }))), ...productSchema]}
+>
+  <section class="section product">
+    <div class="container">
+      <Breadcrumbs items={crumbs} />
+      <div class="product__grid">
+        <div class="product__media">
+          <Photo
+            slot={product.photo}
+            alt={product.photoAlt ?? product.name}
+            brief="product photograph"
+            priority
+            tone="espresso"
+            ratio="4 / 5"
+            sizes="(min-width: 64rem) 50vw, 100vw"
+          />
+        </div>
+        <div class="product__info">
+          <h1 class="product__name">{product.name}</h1>
+          <p class="product__summary">{product.summary}</p>
+
+          {
+            product.variants.length > 0 && (
+              <div class="product__variants">
+                <h2 class="product__label">Sizes</h2>
+                <ul>
+                  {product.variants.map((v) => (
+                    <li>
+                      <span>{v.label}</span>
+                      {v.price && <span class="product__price">{formatPrice(v.price)}</span>}
+                      {v.availability === 'out_of_stock' && <span class="product__stock">Out of stock</span>}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )
+          }
+
+          <OrderPanel product={product} />
+
+          {
+            details.length > 0 && (
+              <dl class="product__details">
+                {details.map(([term, value]) => (
+                  <div>
+                    <dt>{term}</dt>
+                    <dd>{value}</dd>
+                  </div>
+                ))}
+              </dl>
+            )
+          }
+
+          {
+            product.tastingNotes && product.tastingNotes.length > 0 && (
+              <div>
+                <h2 class="product__label">Tasting notes</h2>
+                <p>{product.tastingNotes.join(', ')}</p>
+              </div>
+            )
+          }
+
+          <div class="product__description prose">
+            {product.description.map((para) => <p>{para}</p>)}
+          </div>
+
+          {
+            !published && (
+              <Pending
+                title="Product details"
+                items={['Product name', 'Description', 'Pack sizes and prices', 'Species, process, roast and form', 'Product photograph']}
+              />
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {
+    others.length > 0 && (
+      <section class="section surface-paper" aria-labelledby="more-title">
+        <div class="container">
+          <h2 id="more-title" class="more__title">
+            More from Glazebrooke
+          </h2>
+          <div class="more__grid">
+            {others.map((p, i) => (
+              <ProductCard product={p} index={i + 1} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+</ShopLayout>
+
+<style>
+  .product {
+    padding-top: var(--s-7);
+  }
+  .product__grid {
+    display: grid;
+    gap: var(--s-7);
+    margin-top: var(--s-6);
+  }
+  .product__info {
+    display: grid;
+    gap: var(--s-6);
+    align-content: start;
+  }
+  .product__name {
+    font-size: var(--t-3xl);
+  }
+  .product__summary {
+    font-size: var(--t-lg);
+    max-width: 30rem;
+  }
+  .product__label {
+    font-family: var(--f-text);
+    font-size: var(--t-sm);
+    font-weight: 650;
+    color: var(--c-olive-ink);
+    margin-bottom: var(--s-2);
+  }
+  .product__variants ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--s-2);
+  }
+  .product__variants li {
+    display: flex;
+    gap: var(--s-4);
+    padding-block: var(--s-2);
+    border-bottom: 1px solid var(--c-rule);
+  }
+  .product__price {
+    margin-left: auto;
+    font-weight: 650;
+  }
+  .product__stock {
+    color: var(--c-text-muted);
+  }
+  .product__details {
+    display: grid;
+    gap: var(--s-3);
+  }
+  .product__details div {
+    display: grid;
+    grid-template-columns: 8rem 1fr;
+    gap: var(--s-4);
+    padding-top: var(--s-3);
+    border-top: 1px solid var(--c-rule);
+  }
+  .product__details dt {
+    font-size: var(--t-sm);
+    font-weight: 650;
+    color: var(--c-olive-ink);
+  }
+  .more__title {
+    font-size: var(--t-2xl);
+    margin-bottom: var(--s-7);
+  }
+  .more__grid {
+    display: grid;
+    gap: var(--s-8) var(--gutter);
+  }
+  @media (min-width: 40rem) {
+    .more__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 64rem) {
+    .product__grid {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--gutter);
+    }
+    .product__media {
+      grid-column: 1 / span 6;
+    }
+    .product__media > :global(*) {
+      position: sticky;
+      top: calc(var(--header-h) + var(--s-5));
+    }
+    .product__info {
+      grid-column: 8 / -1;
+    }
+    .more__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

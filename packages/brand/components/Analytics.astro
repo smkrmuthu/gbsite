@@ -1,0 +1,137 @@
+---
+/**
+ * Consent-first GA4. Nothing is rendered unless PUBLIC_GA4_ID is set, and the
+ * Google tag only loads after the visitor chooses "Allow". The choice is
+ * stored in localStorage ("gb-analytics-consent") and can be changed from the
+ * footer's "Cookie settings" button.
+ *
+ * Meaningful actions are tracked declaratively: any element with
+ * data-track="<event_name>" (and optional data-track-label) sends a GA4 event
+ * when clicked — e.g. shop_click, order_click, contact_click.
+ */
+import { GA4_ID } from '../lib/env';
+
+interface Props {
+  privacyHref: string;
+}
+const { privacyHref } = Astro.props;
+---
+
+{
+  GA4_ID && (
+    <div class="consent" data-ga-id={GA4_ID} hidden role="region" aria-label="Analytics preferences">
+      <p>
+        May we measure visits with Google Analytics? It helps us understand which pages are useful. No analytics run unless you allow
+        them. <a href={privacyHref}>Privacy notice</a>
+      </p>
+      <div class="consent__actions">
+        <button type="button" class="btn" data-consent="granted">
+          Allow analytics
+        </button>
+        <button type="button" class="btn btn--ghost" data-consent="denied">
+          Decline
+        </button>
+      </div>
+    </div>
+  )
+}
+
+<script>
+  const KEY = 'gb-analytics-consent';
+  const banner = document.querySelector<HTMLElement>('.consent');
+  const id = banner?.dataset.gaId;
+
+  type Gtag = (...args: unknown[]) => void;
+  const w = window as unknown as { dataLayer: unknown[]; gtag?: Gtag };
+  let loaded = false;
+
+  const read = () => {
+    try {
+      return localStorage.getItem(KEY);
+    } catch {
+      return null;
+    }
+  };
+  const write = (v: string) => {
+    try {
+      localStorage.setItem(KEY, v);
+    } catch {
+      /* storage unavailable: choice lasts for this page view only */
+    }
+  };
+
+  function load() {
+    if (loaded || !id) return;
+    loaded = true;
+    w.dataLayer = w.dataLayer || [];
+    w.gtag = function () {
+      // eslint-disable-next-line prefer-rest-params
+      w.dataLayer.push(arguments);
+    };
+    w.gtag('js', new Date());
+    w.gtag('config', id);
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(id)}`;
+    document.head.appendChild(s);
+  }
+
+  if (banner && id) {
+    const choice = read();
+    if (choice === 'granted') load();
+    else if (choice !== 'denied') banner.hidden = false;
+
+    banner.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-consent]');
+      if (!btn) return;
+      const value = btn.dataset.consent!;
+      write(value);
+      banner.hidden = true;
+      if (value === 'granted') load();
+      else if (loaded) window.location.reload(); // stop the tag already running on this page
+    });
+
+    document.querySelectorAll<HTMLButtonElement>('[data-consent-open]').forEach((b) => {
+      b.hidden = false;
+      b.addEventListener('click', () => {
+        banner.hidden = false;
+        banner.querySelector<HTMLButtonElement>('[data-consent]')?.focus();
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      const el = (e.target as HTMLElement).closest<HTMLElement>('[data-track]');
+      if (!el || !w.gtag) return;
+      w.gtag('event', el.dataset.track, {
+        link_text: el.dataset.trackLabel || el.textContent?.trim().slice(0, 100),
+        link_url: (el as HTMLAnchorElement).href || undefined,
+        transport_type: 'beacon',
+      });
+    });
+  }
+</script>
+
+<style>
+  .consent {
+    position: fixed;
+    z-index: 60;
+    left: var(--gutter);
+    right: var(--gutter);
+    bottom: var(--gutter);
+    max-width: 34rem;
+    padding: var(--s-5);
+    background: var(--c-paper);
+    border: 1px solid var(--c-rule-strong);
+    box-shadow: 0 1.5rem 3rem -1.5rem rgb(48 35 29 / 0.35);
+    font-size: var(--t-sm);
+  }
+  .consent[hidden] {
+    display: none;
+  }
+  .consent__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+    margin-top: var(--s-4);
+  }
+</style>

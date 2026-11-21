@@ -1,0 +1,221 @@
+---
+/**
+ * Contact form with three honest modes, chosen from brand.config.ts:
+ *  1. contact.formEndpoint set → POSTs to that service (no page reload).
+ *  2. only contact.email set   → opens the visitor's email app, message prefilled.
+ *  3. neither set              → the form is not rendered (renders a <Pending> note).
+ * Validation errors are announced and linked to their fields.
+ */
+import { brand } from '../config/brand.config';
+import Pending from './Pending.astro';
+
+interface Props {
+  topics: string[];
+  defaultTopic?: string;
+  idPrefix?: string;
+}
+const { topics, defaultTopic, idPrefix = 'contact' } = Astro.props;
+const { formEndpoint, email } = brand.contact;
+const mode: 'endpoint' | 'mailto' | 'none' = formEndpoint ? 'endpoint' : email ? 'mailto' : 'none';
+const id = (n: string) => `${idPrefix}-${n}`;
+---
+
+{
+  mode === 'none' ? (
+    <Pending
+      title="Contact route for this form"
+      items={[
+        'A public enquiries email address (brand.config.ts → contact.email), or',
+        'A form-handling endpoint such as Formspree or Web3Forms (contact.formEndpoint)',
+      ]}
+    />
+  ) : (
+    <form
+      class="contact-form"
+      novalidate
+      method="post"
+      action={mode === 'endpoint' ? formEndpoint : undefined}
+      data-mode={mode}
+      data-email={email}
+      aria-describedby={id('how')}
+    >
+      <p id={id('how')} class="contact-form__how">
+        {mode === 'endpoint'
+          ? 'Your message is sent to the estate team. We use your details only to reply.'
+          : 'Sending opens your email app with this message filled in, addressed to the estate. Nothing is sent until you press send there.'}
+      </p>
+
+      <div class="contact-form__error-summary" role="alert" tabindex="-1" hidden />
+
+      <div class="field">
+        <label for={id('name')}>Your name</label>
+        <input id={id('name')} name="name" type="text" autocomplete="name" required aria-describedby={id('name-err')} />
+        <p class="field__error" id={id('name-err')} hidden>
+          Enter your name.
+        </p>
+      </div>
+
+      <div class="field">
+        <label for={id('email')}>Email address</label>
+        <input id={id('email')} name="email" type="email" autocomplete="email" required aria-describedby={id('email-err')} />
+        <p class="field__error" id={id('email-err')} hidden>
+          Enter an email address in the format name@example.com.
+        </p>
+      </div>
+
+      <div class="field">
+        <label for={id('topic')}>What is it about?</label>
+        <select id={id('topic')} name="topic">
+          {topics.map((t) => (
+            <option selected={t === defaultTopic}>{t}</option>
+          ))}
+        </select>
+      </div>
+
+      <div class="field">
+        <label for={id('message')}>Message</label>
+        <textarea id={id('message')} name="message" rows="6" required aria-describedby={id('message-err')} />
+        <p class="field__error" id={id('message-err')} hidden>
+          Write a message so we know how to help.
+        </p>
+      </div>
+
+      {mode === 'endpoint' && (
+        <div class="visually-hidden" aria-hidden="true">
+          <label for={id('company')}>Leave this field empty</label>
+          <input id={id('company')} name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+      )}
+
+      <button class="btn" type="submit" data-track="contact_submit">
+        {mode === 'endpoint' ? 'Send message' : 'Write email'}
+      </button>
+      <p class="contact-form__status" role="status" aria-live="polite" />
+    </form>
+  )
+}
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('.contact-form').forEach((form) => {
+    const summary = form.querySelector<HTMLElement>('.contact-form__error-summary')!;
+    const status = form.querySelector<HTMLElement>('.contact-form__status')!;
+    const fields = [...form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input[required], textarea[required]')];
+
+    const validate = () => {
+      const invalid: HTMLElement[] = [];
+      fields.forEach((f) => {
+        const err = document.getElementById(f.getAttribute('aria-describedby')!)!;
+        const ok = f.value.trim() !== '' && f.checkValidity();
+        if (ok) f.removeAttribute('aria-invalid');
+        else f.setAttribute('aria-invalid', 'true');
+        err.hidden = ok;
+        if (!ok) invalid.push(f);
+      });
+      if (invalid.length) {
+        summary.textContent = `Please check ${invalid.length === 1 ? 'one field' : `${invalid.length} fields`} below.`;
+        summary.hidden = false;
+        (invalid[0] as HTMLElement).focus();
+      } else {
+        summary.hidden = true;
+      }
+      return invalid.length === 0;
+    };
+
+    fields.forEach((f) =>
+      f.addEventListener('blur', () => {
+        if (f.hasAttribute('aria-invalid')) validate();
+      }),
+    );
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.textContent = '';
+      if (!validate()) return;
+      const data = new FormData(form);
+      const get = (k: string) => String(data.get(k) ?? '').trim();
+
+      if (form.dataset.mode === 'mailto') {
+        const body = `${get('message')}\n\n${get('name')}\n${get('email')}`;
+        const href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(`${get('topic')} — website enquiry`)}&body=${encodeURIComponent(body)}`;
+        window.location.href = href;
+        status.textContent = 'Your email app should now be open with the message ready to send.';
+        return;
+      }
+
+      const btn = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+      btn.disabled = true;
+      status.textContent = 'Sending…';
+      try {
+        const res = await fetch(form.action, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+        if (!res.ok) throw new Error(String(res.status));
+        form.reset();
+        status.textContent = 'Message sent. Thank you, we will reply by email.';
+      } catch {
+        status.textContent = 'The message could not be sent. Check your connection and try again, or use the contact details on this page.';
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  });
+</script>
+
+<style>
+  .contact-form {
+    display: grid;
+    gap: var(--s-5);
+    max-width: 36rem;
+  }
+  .contact-form__how {
+    font-size: var(--t-sm);
+    color: var(--c-text-muted);
+  }
+  .field {
+    display: grid;
+    gap: var(--s-2);
+  }
+  .field label {
+    font-size: var(--t-sm);
+    font-weight: 650;
+    color: var(--c-forest);
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.7rem 0.85rem;
+    background: var(--c-paper);
+    border: 1px solid var(--c-rule-strong);
+    border-radius: var(--radius);
+    color: var(--c-espresso);
+  }
+  .field textarea {
+    resize: vertical;
+  }
+  .field input:focus-visible,
+  .field select:focus-visible,
+  .field textarea:focus-visible {
+    outline: 2px solid var(--c-forest);
+    outline-offset: 1px;
+    border-color: var(--c-forest);
+  }
+  .field [aria-invalid='true'] {
+    border-color: #8a2d1f;
+  }
+  .field__error,
+  .contact-form__error-summary {
+    color: #8a2d1f;
+    font-size: var(--t-sm);
+    font-weight: 600;
+  }
+  .contact-form__error-summary:focus {
+    outline: none;
+  }
+  .contact-form button {
+    justify-self: start;
+  }
+  .contact-form__status {
+    font-size: var(--t-sm);
+    min-height: 1.5em;
+  }
+</style>

@@ -1,0 +1,96 @@
+---
+import ShopLayout from '../layouts/ShopLayout.astro';
+import Photo from '@glazebrooke/brand/components/Photo.astro';
+import Pending from '@glazebrooke/brand/components/Pending.astro';
+import { fact, elevationRange } from '@glazebrooke/brand/config/facts';
+import { mainUrl } from '@glazebrooke/brand/lib/links';
+
+const established = fact('established');
+const family = fact('familyOwned');
+const elevation = elevationRange();
+---
+
+<ShopLayout
+  title="About Our Coffee | Estate Coffee from Yercaud, Tamil Nadu | Glazebrooke"
+  description="Where Glazebrooke coffee comes from: a family-owned estate in Yercaud, in the Shevaroy Hills of Tamil Nadu, growing coffee at elevation."
+>
+  <section class="section about">
+    <div class="container grid">
+      <div class="about__text">
+        <h1 class="t-3xl">About our coffee.</h1>
+        <div class="prose about__prose">
+          <p class="about__lede">
+            Glazebrooke coffee is grown at Glazebrooke Coffee Estate in Yercaud, in the Shevaroy Hills of Tamil Nadu{
+              elevation ? `, at approximately ${elevation.feet} above sea level` : ''
+            }.
+          </p>
+          {
+            (family || established) && (
+              <p>
+                {family ? 'The estate is family-owned' : 'The estate'}
+                {established ? `${family ? ' and' : ''} has grown coffee since the ${established}` : ''}.
+              </p>
+            )
+          }
+          <Pending
+            title="Coffee details"
+            items={['Species and varieties', 'Processing method', 'Roast levels and grind options', 'Tasting notes approved by the estate', 'Freshness and storage guidance']}
+          />
+        </div>
+        <div class="about__links">
+          <h2 class="t-2xl">More from the estate</h2>
+          <ul>
+            <li><a class="text-link" href={mainUrl('/beyond-coffee/')} data-track="estate_click">Our story</a></li>
+            <li><a class="text-link" href={mainUrl('/our-estate/')} data-track="estate_click">The estate</a></li>
+            <li><a class="text-link" href={mainUrl('/sustainability/')} data-track="estate_click">Sustainability</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="about__media">
+        <Photo slot="coffee-cup" tone="espresso" ratio="3 / 4" sizes="(min-width: 64rem) 40vw, 100vw" priority />
+      </div>
+    </div>
+  </section>
+</ShopLayout>
+
+<style>
+  .about {
+    padding-top: var(--s-9);
+  }
+  .about__text {
+    display: grid;
+    gap: var(--s-7);
+    align-content: start;
+  }
+  .about__lede {
+    font-family: var(--f-display);
+    font-size: var(--t-2xl);
+    line-height: 1.2;
+    color: var(--c-forest);
+  }
+  .about__prose > * + * {
+    margin-top: var(--s-5);
+  }
+  .about__prose {
+    max-width: 36rem;
+  }
+  .about__links {
+    display: grid;
+    gap: var(--s-4);
+  }
+  .about__links ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-6);
+  }
+  @media (min-width: 64rem) {
+    .about__text {
+      grid-column: 1 / span 6;
+    }
+    .about__media {
+      grid-column: 8 / -1;
+    }
+  }
+</style>

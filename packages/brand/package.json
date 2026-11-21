@@ -1,0 +1,20 @@
+{
+  "name": "@glazebrooke/brand",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared Glazebrooke brand tokens, configuration and Astro components for the brand site and the shop.",
+  "exports": {
+    "./config/*": "./config/*.ts",
+    "./lib/*": "./lib/*.ts",
+    "./components/*": "./components/*",
+    "./styles/*": "./styles/*"
+  },
+  "dependencies": {
+    "@fontsource-variable/manrope": "5.3.0",
+    "@fontsource/cormorant-garamond": "5.3.0"
+  },
+  "peerDependencies": {
+    "astro": "7.x"
+  }
+}

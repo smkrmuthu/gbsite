@@ -1,0 +1,133 @@
+---
+/** Contact details from brand.config.ts. Unconfirmed items are omitted, never faked. */
+import { brand } from '../config/brand.config';
+import { mailto, tel, socialLabel } from '../lib/links';
+import Pending from './Pending.astro';
+
+const { contact, social, location } = brand;
+const missing = [
+  !contact.email && 'Enquiries email address',
+  !contact.phone && 'Phone number',
+  contact.address.length === 0 && 'Postal address of the estate',
+  !contact.mapUrl && 'Map link to the estate',
+  social.length === 0 && 'Official social media profile links',
+].filter(Boolean) as string[];
+---
+
+<div class="details">
+  <dl>
+    <div>
+      <dt>Location</dt>
+      <dd>
+        {
+          contact.address.length > 0 ? (
+            <address>
+              {contact.address.map((line) => (
+                <span>{line}</span>
+              ))}
+            </address>
+          ) : (
+            <span>
+              {location.locality}, {location.region}, {location.country}
+            </span>
+          )
+        }
+        {
+          contact.mapUrl && (
+            <a href={contact.mapUrl} target="_blank" rel="noopener" data-track="contact_click" data-track-label="map">
+              View on a map<span class="visually-hidden"> (opens in a new tab)</span>
+            </a>
+          )
+        }
+      </dd>
+    </div>
+    {
+      contact.email && (
+        <div>
+          <dt>Email</dt>
+          <dd>
+            <a href={mailto(contact.email)} data-track="contact_click" data-track-label="email">
+              {contact.email}
+            </a>
+          </dd>
+        </div>
+      )
+    }
+    {
+      contact.phone && (
+        <div>
+          <dt>Phone</dt>
+          <dd>
+            <a href={tel(contact.phone)} data-track="contact_click" data-track-label="phone">
+              {contact.phone}
+            </a>
+          </dd>
+        </div>
+      )
+    }
+    {
+      social.length > 0 && (
+        <div>
+          <dt>Follow</dt>
+          <dd>
+            <ul class="details__social">
+              {social.map((s) => (
+                <li>
+                  <a href={s.url} target="_blank" rel="me noopener">
+                    {socialLabel[s.network] ?? s.network}
+                    <span class="visually-hidden"> (opens in a new tab)</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </dd>
+        </div>
+      )
+    }
+  </dl>
+  {missing.length > 0 && <Pending title="Verified contact details" items={missing} />}
+</div>
+
+<style>
+  .details {
+    display: grid;
+    gap: var(--s-6);
+  }
+  .details dl {
+    display: grid;
+    gap: var(--s-4);
+  }
+  .details dl > div {
+    display: grid;
+    gap: var(--s-1);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--c-rule-strong);
+  }
+  .details dt {
+    font-size: var(--t-sm);
+    font-weight: 650;
+    color: var(--c-olive-ink);
+  }
+  .details dd {
+    display: grid;
+    gap: var(--s-1);
+    font-family: var(--f-display);
+    font-size: var(--t-xl);
+    color: var(--c-forest);
+    line-height: 1.3;
+  }
+  .details dd a {
+    color: var(--c-forest);
+  }
+  .details address {
+    font-style: normal;
+    display: grid;
+  }
+  .details__social {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-5);
+  }
+</style>

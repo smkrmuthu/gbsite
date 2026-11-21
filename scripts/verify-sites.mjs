@@ -19,6 +19,8 @@ const sites = {
   main: { dist: path.join(root, 'apps/main/dist'), origin: strip(process.env.PUBLIC_MAIN_SITE_URL || 'https://glazebrookecoffee.com') },
   shop: { dist: path.join(root, 'apps/shop/dist'), origin: strip(process.env.PUBLIC_SHOP_URL || 'https://shop.glazebrookecoffee.com') },
 };
+/** Preview builds (PUBLIC_SITE_INDEXABLE=false) must be fully noindex and disallowed instead. */
+const previewBuild = process.env.PUBLIC_SITE_INDEXABLE === 'false';
 /** Pages that are deliberately noindex. */
 const allowedNoindex = [/^\/404\.html$/, /^\/products\/[^/]*placeholder[^/]*\/$/];
 
@@ -88,7 +90,10 @@ for (const [name, site] of Object.entries(sites)) {
     if (title && title.length > 75) warn(name, route, `title is ${title.length} characters (may be truncated in results)`);
     if (!doc.querySelector('html')?.getAttribute('lang')) err(name, route, 'missing html lang');
 
-    if (noindex) {
+    if (previewBuild) {
+      if (!noindex) err(name, route, 'preview build page is missing noindex');
+      if (!allowedNoindex.some((re) => re.test(route))) indexable.add(route);
+    } else if (noindex) {
       if (!allowedNoindex.some((re) => re.test(route))) err(name, route, 'unexpected noindex on a public page');
     } else {
       indexable.add(route);
@@ -189,8 +194,12 @@ for (const [name, site] of Object.entries(sites)) {
   if (!existsSync(robotsFile)) err(name, '/robots.txt', 'missing');
   else {
     const robots = readFileSync(robotsFile, 'utf8');
-    if (/^Disallow:\s*\/\s*$/m.test(robots)) err(name, '/robots.txt', 'blocks the whole site');
-    if (!robots.includes(`Sitemap: ${site.origin}/sitemap-index.xml`)) err(name, '/robots.txt', 'missing or wrong Sitemap line');
+    if (previewBuild) {
+      if (!/^Disallow:\s*\/\s*$/m.test(robots)) err(name, '/robots.txt', 'preview build must disallow crawling');
+    } else {
+      if (/^Disallow:\s*\/\s*$/m.test(robots)) err(name, '/robots.txt', 'blocks the whole site');
+      if (!robots.includes(`Sitemap: ${site.origin}/sitemap-index.xml`)) err(name, '/robots.txt', 'missing or wrong Sitemap line');
+    }
   }
 }
 

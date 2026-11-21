@@ -19,6 +19,13 @@ export const GA4_ID = clean(env.PUBLIC_GA4_ID);
 /** Google Search Console HTML-tag verification token (content attribute only). */
 export const GSC_VERIFICATION = clean(env.PUBLIC_GSC_VERIFICATION);
 
+/**
+ * Set to 'false' on preview/staging deployments (e.g. *.pages.dev) so search
+ * engines do not index them: robots.txt disallows everything and every page
+ * gets <meta name="robots" content="noindex">. Leave unset on production domains.
+ */
+export const SITE_INDEXABLE = clean(env.PUBLIC_SITE_INDEXABLE) !== 'false';
+
 /** Hide "to be supplied" placeholder notes and photo captions (use for launch once content is in). */
 export const HIDE_PLACEHOLDERS = clean(env.PUBLIC_HIDE_PLACEHOLDERS) === 'true';
 /** Set to 'false' to strip every owner-supplied-but-unverified fact from the copy. */

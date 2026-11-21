@@ -233,6 +233,9 @@ image rights, then move the confirmed pieces into the config files and
 
 Each app builds to its own `dist/` folder of static files and can be hosted
 anywhere: Cloudflare Pages, Netlify, Vercel, S3/CloudFront, or any web server.
+Each app also has a `wrangler.jsonc` for Cloudflare Workers (static assets), the
+recommended host: `npx wrangler deploy --config apps/<app>/wrangler.jsonc` after
+building.
 See [DEPLOYMENT.md](DEPLOYMENT.md) for step-by-step instructions, DNS, HTTPS,
 redirects and post-launch checks.
 

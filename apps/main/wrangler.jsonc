@@ -1,0 +1,18 @@
+// Cloudflare Workers (static assets) deployment for this site.
+// Build from the repo root first:  npm run build:main
+// Deploy:                           npx wrangler deploy --config apps/main/wrangler.jsonc
+// "name" must match the Worker's name in the Cloudflare dashboard.
+{
+  "name": "glazebrooke",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    // Built site (relative to this file). _headers and _redirects in it are applied.
+    "directory": "./dist",
+    // Unknown URLs get dist/404.html with a 404 status.
+    "not_found_handling": "404-page",
+    // /our-estate redirects to /our-estate/ to match the canonical URLs.
+    "html_handling": "auto-trailing-slash"
+  },
+  // Disable the *.workers.dev preview-URL feature for non-production versions.
+  "preview_urls": false
+}

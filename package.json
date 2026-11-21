@@ -12,7 +12,8 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
     "node-html-parser": "^9.0.7",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "wrangler": "^4.166.0"
   },
   "scripts": {
     "dev:main": "npm run dev -w @glazebrooke/main",

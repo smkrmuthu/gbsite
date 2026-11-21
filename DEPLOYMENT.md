@@ -47,12 +47,40 @@ npm run content:status
 | `PUBLIC_SHOP_URL` | `https://shop.glazebrookecoffee.com` | same | Default if unset. Drives every Buy coffee link |
 | `PUBLIC_GA4_ID` | `G-…` (optional) | `G-…` (optional) | Leave unset until GA4 exists |
 | `PUBLIC_GSC_VERIFICATION` | token (optional) | token (optional) | Not needed if you verify by DNS |
+| `PUBLIC_SITE_INDEXABLE` | `false` on preview addresses only | same | `false` = robots.txt disallows all and every page is noindex. Remove on production domains |
 | `PUBLIC_HIDE_PLACEHOLDERS` | `false` now, `true` at launch | same | Hides "To be supplied" notes |
 | `PUBLIC_PUBLISH_UNVERIFIED_FACTS` | `true` / `false` | same | `false` removes unconfirmed facts from copy |
 
 These are build-time values: **rebuild after changing them.**
 
 ## 3. Brand site: step by step
+
+### Recommended: Cloudflare Workers (Git integration)
+
+Each app has a `wrangler.jsonc` that deploys `dist/` as Workers static assets
+(with `_headers`, `_redirects`, the styled 404 page, and trailing-slash URLs).
+
+1. Cloudflare dashboard → **Workers & Pages → Create application → Import a
+   repository** → `smkrmuthu/gbsite`.
+2. **Project name:** `glazebrooke`. It must equal `name` in `apps/main/wrangler.jsonc`.
+3. **Build command:** `npm run build:main`
+4. **Deploy command:** `npx wrangler deploy --config apps/main/wrangler.jsonc`
+5. **Non-production branch deploy command** (if shown):
+   `npx wrangler versions upload --config apps/main/wrangler.jsonc`
+6. **Advanced settings → Build variables:** see §2. Until the real domains are
+   attached, use the workers.dev addresses and keep search engines out:
+   - `PUBLIC_MAIN_SITE_URL` = `https://glazebrooke.<your-subdomain>.workers.dev`
+   - `PUBLIC_SHOP_URL` = `https://glazebrooke-shop.<your-subdomain>.workers.dev`
+   - `PUBLIC_SITE_INDEXABLE` = `false`
+   - `NODE_VERSION` = `22.23.5`
+
+   `<your-subdomain>` is shown under **Workers & Pages → Account details → Subdomain**.
+7. Deploy. At go-live, attach the custom domain (Worker → Settings → Domains &
+   Routes), change both URL variables to the real domains, **delete**
+   `PUBLIC_SITE_INDEXABLE`, and redeploy.
+
+The shop is the same with name `glazebrooke-shop`, `npm run build:shop` and
+`--config apps/shop/wrangler.jsonc`.
 
 ### Option A: Cloudflare Pages (Git integration)
 

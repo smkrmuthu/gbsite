@@ -1,7 +1,7 @@
 ---
 import ShopLayout from '../layouts/ShopLayout.astro';
 import Photo from '@glazebrooke/brand/components/Photo.astro';
-import Pending from '@glazebrooke/brand/components/Pending.astro';
+import Draft from '@glazebrooke/brand/components/Draft.astro';
 import { fact, elevationRange } from '@glazebrooke/brand/config/facts';
 import { mainUrl } from '@glazebrooke/brand/lib/links';
 
@@ -32,10 +32,16 @@ const elevation = elevationRange();
               </p>
             )
           }
-          <Pending
-            title="Coffee details"
-            items={['Species and varieties', 'Processing method', 'Roast levels and grind options', 'Tasting notes approved by the estate', 'Freshness and storage guidance']}
-          />
+          <p>
+            The range includes Chandragiri, Selection 9, Yellow Maragogipe, Selection 5B and HRC (Hybrid Robusta Coffee).
+            <a href="/products/">See all coffees</a>.
+          </p>
+          <Draft>
+            <p>
+              Each coffee is grown on the estate's slopes and prepared with care after harvest. Processing, roast and tasting notes, and advice
+              on storing your coffee, will be added to each product page.
+            </p>
+          </Draft>
         </div>
         <div class="about__links">
           <h2 class="t-2xl">More from the estate</h2>

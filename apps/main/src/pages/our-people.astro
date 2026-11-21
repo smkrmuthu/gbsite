@@ -3,7 +3,7 @@ import MainLayout from '../layouts/MainLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import BuyCoffee from '../components/BuyCoffee.astro';
 import Photo from '@glazebrooke/brand/components/Photo.astro';
-import Pending from '@glazebrooke/brand/components/Pending.astro';
+import Draft from '@glazebrooke/brand/components/Draft.astro';
 ---
 
 <MainLayout
@@ -40,15 +40,13 @@ import Pending from '@glazebrooke/brand/components/Pending.astro';
       </div>
       <div class="team__text prose">
         <h2 id="team-title" class="t-2xl">The team</h2>
-        <Pending
-          title="People's stories, shared with their consent"
-          items={[
-            'Short profiles: name (or first name), role and years at Glazebrooke',
-            'A sentence or two in their own words about their work',
-            'Portraits, with written permission to publish',
-            'Any community or welfare initiatives the estate supports',
-          ]}
-        />
+        <Draft>
+          <p>
+            Many of the people who work at Glazebrooke bring years of experience with coffee and with these hills. Their skill shows in every
+            stage of the work, from tending the plants to bringing in the harvest.
+          </p>
+          <p>In the coming months we will introduce some of them here, in their own words.</p>
+        </Draft>
       </div>
     </div>
   </section>

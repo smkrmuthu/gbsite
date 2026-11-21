@@ -1,0 +1,37 @@
+---
+/**
+ * Provisional copy written to fill a gap until the estate supplies its own
+ * words. Every paragraph is marked with "*" and the block ends with a note.
+ * Search for <Draft to find them all (also listed by `npm run content:status`).
+ * Replace the whole <Draft>…</Draft> with plain paragraphs once confirmed.
+ */
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<div class:list={['draft', className]}>
+  <slot />
+  <p class="draft__note">
+    <span aria-hidden="true">*</span> Provisional text, to be confirmed by Glazebrooke Coffee Estate.
+  </p>
+</div>
+
+<style>
+  .draft {
+    display: grid;
+    gap: var(--s-4);
+    max-width: var(--measure);
+  }
+  .draft > :global(p:not(.draft__note))::after,
+  .draft > :global(ul li)::after {
+    content: '*';
+    margin-left: 0.1em;
+    color: var(--c-olive-ink);
+  }
+  .draft__note {
+    font-size: var(--t-xs);
+    color: var(--c-text-muted);
+  }
+</style>

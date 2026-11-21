@@ -7,7 +7,7 @@ import MainLayout from '../layouts/MainLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import BuyCoffee from '../components/BuyCoffee.astro';
 import Photo from '@glazebrooke/brand/components/Photo.astro';
-import Pending from '@glazebrooke/brand/components/Pending.astro';
+import Draft from '@glazebrooke/brand/components/Draft.astro';
 import { fact } from '@glazebrooke/brand/config/facts';
 
 const established = fact('established');
@@ -74,15 +74,13 @@ const values = [
           }
           {family ? ' The estate remains family-owned today.' : ''}
         </p>
-        <Pending
-          title="The family story"
-          items={[
-            'Who founded the estate, and the year it was established',
-            'How the estate has passed through the family',
-            'Key moments: first harvests, replanting, new ventures',
-            'Archival photographs, with dates and permission to publish',
-          ]}
-        />
+        <Draft>
+          <p>
+            Glazebrooke has been shaped by the people who have looked after it over the decades. Each season has added to what the estate
+            knows: where coffee grows best on these slopes, when the cherries are ready, and how to care for the land between harvests.
+          </p>
+          <p>The story of the family, the founding of the estate and the milestones since will be told here in full.</p>
+        </Draft>
       </div>
     </div>
   </section>
@@ -104,7 +102,7 @@ const values = [
   <section class="section" aria-labelledby="values-title">
     <div class="container grid">
       <div class="values__intro">
-        <h2 id="values-title">What guides us</h2>
+        <h2 id="values-title">What guides us<span class="values__mark" aria-hidden="true">*</span></h2>
       </div>
       <dl class="values__list">
         {
@@ -117,7 +115,7 @@ const values = [
         }
       </dl>
       <div class="values__pending">
-        <Pending title="Confirm these values in the family's own words" />
+        <Draft />
       </div>
     </div>
   </section>
@@ -156,6 +154,9 @@ const values = [
   .values__list {
     display: grid;
     gap: var(--s-6) var(--gutter);
+  }
+  .values__mark {
+    color: var(--c-olive-ink);
   }
   .values__item {
     padding-top: var(--s-4);

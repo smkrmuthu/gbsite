@@ -179,7 +179,11 @@ both deployments.
   focal points live). The build optimises it automatically. Then update `IMAGE-ASSETS.md`.
 - **Page copy:** edit the `.astro` files in `apps/*/src/pages/`. Text is plain
   HTML inside each file. "To be supplied" notes are `<Pending … />` elements:
-  replace each with real content and delete the note.
+  replace each with real content and delete the note. Provisional copy written
+  to fill story gaps is wrapped in `<Draft>…</Draft>`, which marks every
+  paragraph with \* and adds "Provisional text, to be confirmed by Glazebrooke
+  Coffee Estate". Replace the whole element with the estate's own words.
+  `npm run content:status` lists every draft and interim photo.
 - **Navigation:** `apps/main/src/site.ts` and `apps/shop/src/site.ts`.
 - **Colours and type:** `packages/brand/styles/tokens.css` (contrast ratios are noted inline).
 

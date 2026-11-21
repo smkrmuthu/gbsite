@@ -3,11 +3,11 @@ import MainLayout from '../layouts/MainLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import BuyCoffee from '../components/BuyCoffee.astro';
 import Photo from '@glazebrooke/brand/components/Photo.astro';
-import Pending from '@glazebrooke/brand/components/Pending.astro';
+import Draft from '@glazebrooke/brand/components/Draft.astro';
 
 /**
  * Each area states why it matters (general, uncontroversial) and leaves the
- * estate's actual practice as a Pending note. Do not add practices,
+ * estate's actual practice as provisional Draft text. Do not add practices,
  * certifications or measured results unless the estate can evidence them.
  */
 const areas = [
@@ -67,11 +67,13 @@ const areas = [
         }
       </ul>
       <div class="approach__pending">
-        <Pending title="Practices on the estate, for each area above" items={areas.map((a) => a.ask)}>
-          <p class="pending-extra">
-            Also: any certifications actually held (with certificate details), and any measured results. Publish only what the estate can show.
+        <Draft>
+          <p>
+            On a hillside estate these five areas are closely connected: healthy soil holds water, trees protect the soil, and together they
+            support the wildlife around the coffee.
           </p>
-        </Pending>
+          <p>How each of them is looked after at Glazebrooke will be described here in the estate's own words.</p>
+        </Draft>
       </div>
     </div>
   </section>

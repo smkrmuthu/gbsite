@@ -1,3 +1,5 @@
+import { normaliseSiteUrl } from './site-url';
+
 /**
  * Deployment settings read from PUBLIC_* environment variables.
  * Astro/Vite inline these at build time. The fallback to process.env lets
@@ -9,10 +11,9 @@ const env: Record<string, string | undefined> =
   {};
 
 const clean = (v: string | undefined) => (v ?? '').trim();
-const stripSlash = (url: string) => url.replace(/\/+$/, '');
 
-export const MAIN_SITE_URL = stripSlash(clean(env.PUBLIC_MAIN_SITE_URL) || 'https://glazebrookecoffee.com');
-export const SHOP_URL = stripSlash(clean(env.PUBLIC_SHOP_URL) || 'https://shop.glazebrookecoffee.com');
+export const MAIN_SITE_URL = normaliseSiteUrl('PUBLIC_MAIN_SITE_URL', env.PUBLIC_MAIN_SITE_URL, 'https://glazebrookecoffee.com');
+export const SHOP_URL = normaliseSiteUrl('PUBLIC_SHOP_URL', env.PUBLIC_SHOP_URL, 'https://shop.glazebrookecoffee.com');
 
 /** GA4 measurement ID (G-XXXXXXX). Empty = analytics code is not rendered at all. */
 export const GA4_ID = clean(env.PUBLIC_GA4_ID);

@@ -14,10 +14,10 @@ import { fileURLToPath } from 'node:url';
 import { parse } from 'node-html-parser';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const strip = (u) => u.replace(/\/+$/, '');
+import { normaliseSiteUrl } from '../packages/brand/lib/site-url.ts';
 const sites = {
-  main: { dist: path.join(root, 'apps/main/dist'), origin: strip(process.env.PUBLIC_MAIN_SITE_URL || 'https://glazebrookecoffee.com') },
-  shop: { dist: path.join(root, 'apps/shop/dist'), origin: strip(process.env.PUBLIC_SHOP_URL || 'https://shop.glazebrookecoffee.com') },
+  main: { dist: path.join(root, 'apps/main/dist'), origin: normaliseSiteUrl('PUBLIC_MAIN_SITE_URL', process.env.PUBLIC_MAIN_SITE_URL, 'https://glazebrookecoffee.com') },
+  shop: { dist: path.join(root, 'apps/shop/dist'), origin: normaliseSiteUrl('PUBLIC_SHOP_URL', process.env.PUBLIC_SHOP_URL, 'https://shop.glazebrookecoffee.com') },
 };
 /** Preview builds (PUBLIC_SITE_INDEXABLE=false) must be fully noindex and disallowed instead. */
 const previewBuild = process.env.PUBLIC_SITE_INDEXABLE === 'false';

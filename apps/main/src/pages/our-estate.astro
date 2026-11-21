@@ -3,6 +3,7 @@ import MainLayout from '../layouts/MainLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import BuyCoffee from '../components/BuyCoffee.astro';
 import Photo from '@glazebrooke/brand/components/Photo.astro';
+import Draft from '@glazebrooke/brand/components/Draft.astro';
 import Pending from '@glazebrooke/brand/components/Pending.astro';
 import ElevationDiagram from '@glazebrooke/brand/components/ElevationDiagram.astro';
 import { elevationRange } from '@glazebrooke/brand/config/facts';
@@ -66,10 +67,12 @@ const lede = `Glazebrooke lies in ${location.locality}, in the ${location.hills}
           southern India is valued.
         </p>
         <p>On the estate, slope, soil and season all play their part in each year's harvest.</p>
-        <Pending
-          title="How coffee grows at Glazebrooke"
-          items={['Coffee species and varieties grown', 'Harvest season and how the cherry is picked', 'How the coffee is processed and dried']}
-        />
+        <Draft>
+          <p>
+            Each year follows the rhythm of the hills: flowering after the first rains, months of slow ripening, then the harvest, when the
+            cherries are picked and prepared for drying.
+          </p>
+        </Draft>
       </div>
     </div>
   </section>
@@ -82,15 +85,12 @@ const lede = `Glazebrooke lies in ${location.locality}, in the ${location.hills}
           The Shevaroy Hills are a living landscape of forest, streams and farmland. The estate shares its hillside with that wider world, and
           its coffee depends on it.
         </p>
-        <Pending
-          title="Biodiversity on the estate"
-          items={[
-            'Shade trees found on the estate',
-            'Other crops grown alongside the coffee, if any',
-            'Birds and wildlife regularly seen',
-            'Streams, springs or other water sources',
-          ]}
-        />
+        <Draft>
+          <p>
+            Alongside the coffee, the estate is home to tall trees, birds and other wildlife that belong to the wider Shevaroy landscape. We
+            will share more about the life that shares these slopes with our coffee.
+          </p>
+        </Draft>
         <a class="text-link" href="/sustainability/">How we look after the land</a>
       </div>
       <div class="nature__media">

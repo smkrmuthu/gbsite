@@ -47,9 +47,16 @@ const {
   fit = 'cover',
 } = Astro.props;
 
-const image = findPhoto(slot);
-const meta = (photoSlots as Record<string, { alt: string; brief: string; position?: string; quality?: number }>)[slot];
-const altText = alt ?? meta?.alt ?? '';
+type SlotMeta = { alt: string; brief: string; position?: string; quality?: number; interim?: string };
+const slots = photoSlots as Record<string, SlotMeta>;
+const own = findPhoto(slot);
+// Until this slot's own photo exists, an `interim` slot's photo may stand in (labelled).
+const interimMeta = !own && slots[slot]?.interim ? slots[slots[slot].interim!] : undefined;
+const interimImage = !own && slots[slot]?.interim ? findPhoto(slots[slot].interim!) : undefined;
+const image = own ?? interimImage;
+const isInterim = !own && !!interimImage;
+const meta = isInterim ? interimMeta : slots[slot];
+const altText = isInterim ? (meta?.alt ?? '') : (alt ?? meta?.alt ?? '');
 const placeholderBrief = brief ?? meta?.brief ?? 'photograph';
 const usableWidths = image ? widths.filter((w) => w <= image.width).concat(widths.some((w) => w > image.width) ? [image.width] : []) : [];
 ---
@@ -60,17 +67,24 @@ const usableWidths = image ? widths.filter((w) => w <= image.width).concat(width
 >
   {
     image ? (
-      <Picture
-        src={image}
-        alt={altText}
-        formats={['avif', 'webp']}
-        widths={[...new Set(usableWidths)]}
-        sizes={sizes}
-        loading={priority ? 'eager' : 'lazy'}
-        fetchpriority={priority ? 'high' : 'auto'}
-        decoding={priority ? 'sync' : 'async'}
-        quality={meta?.quality ?? 72}
-      />
+      <>
+        <Picture
+          src={image}
+          alt={altText}
+          formats={['avif', 'webp']}
+          widths={[...new Set(usableWidths)]}
+          sizes={sizes}
+          loading={priority ? 'eager' : 'lazy'}
+          fetchpriority={priority ? 'high' : 'auto'}
+          decoding={priority ? 'sync' : 'async'}
+          quality={meta?.quality ?? 72}
+        />
+        {isInterim && (
+          <figcaption class="photo__note">
+            Interim photograph<span aria-hidden="true">*</span>
+          </figcaption>
+        )}
+      </>
     ) : (
       <>
         <ContourArt seed={slot} tone={tone} />

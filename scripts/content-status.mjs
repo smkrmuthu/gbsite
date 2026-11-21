@@ -64,9 +64,26 @@ add(
 add(
   'Photographs (packages/brand/photos/<slot>.jpg)',
   [
-    ...Object.keys(photoSlots).filter((k) => !photos.has(k)),
+    ...Object.keys(photoSlots).filter((k) => !photos.has(k) && !photoSlots[k].interim),
     ...products.map((p) => p.photo).filter((k) => !photos.has(k)),
   ].map((k) => `${k}.jpg — ${photoSlots[k]?.brief ?? 'product photograph'}`),
+);
+// Provisional copy (<Draft>) and interim photos stand in until the estate supplies its own.
+const pagesDir = (app) => path.join(root, 'apps', app, 'src', 'pages');
+const walk = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]));
+const drafts = ['main', 'shop'].flatMap((app) =>
+  walk(pagesDir(app))
+    .filter((f) => f.endsWith('.astro'))
+    .map((f) => [path.relative(root, f), (readFileSync(f, 'utf8').match(/<Draft[\s>/]/g) || []).length])
+    .filter(([, n]) => n > 0)
+    .map(([f, n]) => `${f}: ${n} provisional text block(s) marked *`),
+);
+add('Provisional text to replace (search for <Draft)', drafts);
+add(
+  'Interim photos (shown until the slot\'s own photo is supplied)',
+  Object.entries(photoSlots)
+    .filter(([k, v]) => v.interim && !photos.has(k))
+    .map(([k, v]) => `${k}.jpg: showing ${v.interim} for now. Wanted: ${v.brief}`),
 );
 add('Deployment settings (environment variables)', [
   !process.env.PUBLIC_GA4_ID && 'PUBLIC_GA4_ID not set in this shell (analytics off) — set per site in the host if wanted',

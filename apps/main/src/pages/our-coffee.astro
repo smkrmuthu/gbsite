@@ -3,7 +3,8 @@ import MainLayout from '../layouts/MainLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import BuyCoffee from '../components/BuyCoffee.astro';
 import Photo from '@glazebrooke/brand/components/Photo.astro';
-import Pending from '@glazebrooke/brand/components/Pending.astro';
+import Draft from '@glazebrooke/brand/components/Draft.astro';
+import { products } from '../../../shop/src/data/products';
 import { elevationRange } from '@glazebrooke/brand/config/facts';
 import { shopUrl } from '@glazebrooke/brand/lib/links';
 
@@ -47,15 +48,24 @@ const elevation = elevationRange();
         }
       </dl>
       <div class="origin__pending">
-        <Pending
-          title="Coffee details"
-          items={[
-            'Species and varieties (for example Arabica or Robusta, and cultivar names)',
-            'Processing method',
-            'Roast levels offered',
-            'Tasting notes, written or approved by the estate',
-          ]}
-        />
+        <h3 class="range__title">Coffees in our range</h3>
+        <ul class="range" role="list">
+          {
+            products
+              .filter((p) => p.status === 'published')
+              .map((p) => (
+                <li>
+                  <a href={shopUrl(`/products/${p.slug}/`)} data-track="shop_click" data-track-label={p.name}>
+                    {p.name}
+                  </a>
+                  {p.species && <span class="range__species">{p.species}</span>}
+                </li>
+              ))
+          }
+        </ul>
+        <Draft>
+          <p>Processing, roast and tasting notes for each coffee will be added as they are confirmed by the estate.</p>
+        </Draft>
       </div>
     </div>
   </section>
@@ -108,6 +118,43 @@ const elevation = elevationRange();
     font-size: var(--t-xl);
     color: var(--c-forest);
     line-height: 1.25;
+  }
+  .range__title {
+    font-size: var(--t-lg);
+    margin: var(--s-6) 0 var(--s-3);
+  }
+  .range {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--s-2) var(--gutter);
+    margin-bottom: var(--s-6);
+  }
+  @media (min-width: 48rem) {
+    .range {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .range li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--s-1) var(--s-3);
+    padding-block: var(--s-2);
+    border-bottom: 1px solid var(--c-rule);
+  }
+  .range a {
+    font-family: var(--f-display);
+    font-size: var(--t-xl);
+    color: var(--c-forest);
+    text-decoration: none;
+  }
+  .range a:hover {
+    text-decoration: underline;
+  }
+  .range__species {
+    font-size: var(--t-sm);
+    color: var(--c-text-muted);
   }
   .cup__text {
     align-self: center;

@@ -9,8 +9,8 @@
   uploaded to this repository, since removed from the branch after conversion).
 - **In use:** 10 photographs, 5 product images and the logo.
 - **Not used:** 3 small cut-out images (too small, and probably not estate photography).
-- **Still placeholders:** 2 photo slots (a family/heritage portrait and a team
-  portrait) show the contour-line drawing with a "Photograph to come" caption.
+- **Interim:** 2 photo slots (a family/heritage portrait and a team portrait)
+  show one of the supplied photos, labelled "Interim photograph\*", until real ones arrive.
 
 ### Authenticity and permission: owner to confirm
 
@@ -88,10 +88,17 @@ Fonts in the share images and on the site: Cormorant Garamond and Manrope (SIL O
 
 ## 5. Photo slots still needed
 
-| Slot | Used on | Wanted |
-| --- | --- | --- |
-| `heritage-family` | Our brand: heritage section | Portrait of the family, or an archival estate photograph (with date and permission) |
-| `people-portrait` | Our people: the team | Portrait of a team member, **with written consent** |
+| Slot | Used on | Wanted | Shown meanwhile |
+| --- | --- | --- | --- |
+| `heritage-family` | Our brand: heritage section | Portrait of the family, or an archival estate photograph (with date and permission) | `hands-drying-coffee.jpg`, labelled "Interim photograph\*" |
+| `people-portrait` | Our people: the team | Portrait of a team member, **with written consent** | `cherries-in-hands.jpg`, labelled "Interim photograph\*" |
+
+The interim photos are the owner-supplied images above, reused through the
+slot's `interim` setting in `packages/brand/config/photos.ts`. They keep their
+own neutral alt text. Saving `heritage-family.jpg` or `people-portrait.jpg` in
+`packages/brand/photos/` replaces them automatically. No stock photographs are used:
+free-stock sites could not be reached from the build environment, and the
+supplied photos are closer to the estate.
 
 Also helpful: a genuine photo of the **real packaging**, and a wide landscape
 photo **confirmed as the estate itself** for the home page hero.

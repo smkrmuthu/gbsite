@@ -13,6 +13,8 @@
  * estate confirms a photo, its alt text may name Glazebrooke.
  *
  * `position` sets the CSS object-position used when a slot crops the photo.
+ * `interim` names another slot whose photo is shown (labelled "Interim
+ * photograph*") until this slot's own file is supplied.
  * `quality` (1–100, default 72) lowers encoding quality for very detailed
  * photos (aerial foliage) that would otherwise be heavy to download.
  */
@@ -22,6 +24,7 @@ export interface PhotoSlot {
   brief: string;
   position?: string;
   quality?: number;
+  interim?: string;
 }
 
 export const photoSlots = {
@@ -79,10 +82,12 @@ export const photoSlots = {
   'heritage-family': {
     alt: 'The family behind Glazebrooke Coffee Estate',
     brief: 'portrait of the family, or an archival estate photograph',
+    interim: 'hands-drying-coffee',
   },
   'people-portrait': {
     alt: 'Portrait of a member of the Glazebrooke estate team',
     brief: 'portrait of a team member (with their consent)',
+    interim: 'cherries-in-hands',
   },
 } satisfies Record<string, PhotoSlot>;
 

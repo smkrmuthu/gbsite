@@ -5,7 +5,7 @@
  * Canonical URLs are built from the app's `site` (production domain).
  */
 import { brand } from '../config/brand.config';
-import { GSC_VERIFICATION } from '../lib/env';
+import { GSC_VERIFICATION, SITE_INDEXABLE } from '../lib/env';
 
 export interface HeadProps {
   /** Full, unique <title>. */
@@ -43,7 +43,10 @@ const xHandle = brand.social.find((s) => s.network === 'x')?.handle;
 <title>{title}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonical} />
-<meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'} />
+<meta
+  name="robots"
+  content={!SITE_INDEXABLE ? 'noindex, nofollow' : noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'}
+/>
 <meta name="theme-color" content="#183c32" />
 <meta name="format-detection" content="telephone=no" />
 

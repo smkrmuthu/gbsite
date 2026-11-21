@@ -62,45 +62,80 @@ export interface Product {
   externalIds?: { shopify?: string; woocommerce?: string };
 }
 
+/*
+ * Product names are taken from the jar labels in the product images supplied
+ * from the previous website (November 2026). The `species` and first
+ * description paragraph are general, published facts about each named coffee
+ * variety, not estate claims. Pack sizes, prices, roast, form and tasting notes
+ * are NOT yet confirmed, so they are omitted. Each product page shows a
+ * "To be supplied" note listing them.
+ */
+const ORIGIN = 'Glazebrooke Coffee Estate, Yercaud, Tamil Nadu';
+const GROWN = 'From Glazebrooke Coffee Estate in Yercaud, in the Shevaroy Hills of Tamil Nadu.';
+
 export const products: Product[] = [
   {
-    slug: 'estate-coffee-placeholder-1',
-    status: 'placeholder',
-    name: 'Product name to be confirmed',
-    summary: 'Placeholder for a Glazebrooke coffee. Replace with the confirmed product name and a short description.',
-    description: [
-      'This is a placeholder product used to lay out the shop. Its name, description, sizes and price will be added once the estate confirms them.',
-    ],
-    photo: 'product-estate-coffee-placeholder-1',
-    origin: 'Glazebrooke Coffee Estate, Yercaud, Tamil Nadu',
+    slug: 'chandragiri',
+    status: 'published',
+    name: 'Chandragiri',
+    summary: 'An Arabica coffee of the Chandragiri variety, from Glazebrooke Coffee Estate in Yercaud.',
+    description: ['Chandragiri is an Arabica coffee variety developed in India by the Central Coffee Research Institute.', GROWN],
+    photo: 'product-chandragiri',
+    photoAlt: 'Jar of Chandragiri coffee beans',
+    origin: ORIGIN,
+    species: 'Arabica',
     variants: [],
     featured: true,
   },
   {
-    slug: 'estate-coffee-placeholder-2',
-    status: 'placeholder',
-    name: 'Product name to be confirmed',
-    summary: 'Placeholder for a second Glazebrooke coffee, for example a different roast or grind.',
-    description: [
-      'This is a placeholder product used to lay out the shop. Its name, description, sizes and price will be added once the estate confirms them.',
-    ],
-    photo: 'product-estate-coffee-placeholder-2',
-    origin: 'Glazebrooke Coffee Estate, Yercaud, Tamil Nadu',
+    slug: 'selection-9',
+    status: 'published',
+    name: 'Selection 9',
+    summary: 'An Arabica coffee of the Selection 9 variety, from Glazebrooke Coffee Estate in Yercaud.',
+    description: ['Selection 9 (Sln. 9) is an Arabica coffee selection developed in India by the Central Coffee Research Institute.', GROWN],
+    photo: 'product-selection-9',
+    photoAlt: 'Jar of Selection 9 coffee beans',
+    origin: ORIGIN,
+    species: 'Arabica',
     variants: [],
     featured: true,
   },
   {
-    slug: 'estate-coffee-placeholder-3',
-    status: 'placeholder',
-    name: 'Product name to be confirmed',
-    summary: 'Placeholder for a third Glazebrooke product.',
-    description: [
-      'This is a placeholder product used to lay out the shop. Its name, description, sizes and price will be added once the estate confirms them.',
-    ],
-    photo: 'product-estate-coffee-placeholder-3',
-    origin: 'Glazebrooke Coffee Estate, Yercaud, Tamil Nadu',
+    slug: 'yellow-maragogipe',
+    status: 'published',
+    name: 'Yellow Maragogipe (YMG)',
+    summary: 'An Arabica coffee of the Yellow Maragogipe variety, from Glazebrooke Coffee Estate in Yercaud.',
+    description: ['Maragogipe is an Arabica coffee variety known for its unusually large beans. Yellow Maragogipe is its yellow-fruited form.', GROWN],
+    photo: 'product-yellow-maragogipe',
+    photoAlt: 'Jar of Yellow Maragogipe coffee beans',
+    origin: ORIGIN,
+    species: 'Arabica',
     variants: [],
     featured: true,
+  },
+  {
+    slug: 'selection-5b',
+    status: 'published',
+    name: 'Selection 5B',
+    summary: 'An Arabica coffee of the Selection 5B variety, from Glazebrooke Coffee Estate in Yercaud.',
+    description: ['Selection 5B (Sln. 5B) is an Arabica coffee selection developed in India by the Central Coffee Research Institute.', GROWN],
+    photo: 'product-selection-5b',
+    photoAlt: 'Jar of Selection 5B coffee beans',
+    origin: ORIGIN,
+    species: 'Arabica',
+    variants: [],
+  },
+  {
+    slug: 'hrc-hybrid-robusta',
+    status: 'published',
+    name: 'HRC (Hybrid Robusta Coffee)',
+    summary: 'A hybrid Robusta coffee from Glazebrooke Coffee Estate in Yercaud.',
+    description: ['HRC stands for Hybrid Robusta Coffee.', GROWN],
+    photo: 'product-hrc-hybrid-robusta',
+    photoAlt: 'Jar of HRC Hybrid Robusta coffee beans',
+    origin: ORIGIN,
+    species: 'Robusta (hybrid)',
+    variants: [],
   },
 ];
 

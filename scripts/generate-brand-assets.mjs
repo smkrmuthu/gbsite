@@ -6,7 +6,7 @@
  * Re-run after changing the wordmark or colours:  npm run assets:brand
  * Uses the pre-installed Playwright Chromium for text rendering and sharp for PNGs.
  */
-import { writeFileSync, readFileSync, mkdirSync } from 'node:fs';
+import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -58,6 +58,14 @@ function ridges(seed, w, h, lines = 11) {
   return out;
 }
 
+// Use the official logo when present (apps/main/public/logo-white.png), else a typeset wordmark.
+const logoFile = path.join(root, 'apps/main/public/logo-white.png');
+const logoData = existsSync(logoFile) ? readFileSync(logoFile).toString('base64') : null;
+const mark = (descriptor) =>
+  logoData
+    ? `<img class="logo" src="data:image/png;base64,${logoData}" alt=""><div class="d">${descriptor.replace('Coffee ', '').toUpperCase()}</div>`
+    : `<div class="n">Glazebrooke</div><div class="d">${descriptor}</div>`;
+
 const ogHtml = (descriptor, line) => `<!doctype html><html><head><style>
 @font-face{font-family:C;src:url(data:font/woff2;base64,${serif}) format('woff2');font-weight:500}
 @font-face{font-family:M;src:url(data:font/woff2;base64,${sans}) format('woff2');font-weight:200 800}
@@ -65,11 +73,12 @@ html,body{margin:0;width:1200px;height:630px;background:${forest};overflow:hidde
 svg{position:absolute;inset:0}
 .t{position:absolute;left:80px;top:84px;color:${cream}}
 .n{font-family:C;font-weight:500;font-size:112px;line-height:1;letter-spacing:.5px}
-.d{font-family:M;font-weight:600;font-size:22px;letter-spacing:4px;margin-top:18px;color:#d9c9ae}
+.logo{display:block;width:620px;height:auto}
+.d{font-family:M;font-weight:600;font-size:22px;letter-spacing:4px;margin-top:22px;color:#d9c9ae}
 .l{font-family:M;font-weight:500;font-size:26px;margin-top:44px;color:${cream};max-width:640px;line-height:1.4}
 </style></head><body>
 <svg width="1200" height="630" viewBox="0 0 1200 630">${ridges(descriptor.length * 7919, 1200, 630)}</svg>
-<div class="t"><div class="n">Glazebrooke</div><div class="d">${descriptor}</div><div class="l">${line}</div></div>
+<div class="t">${mark(descriptor)}<div class="l">${line}</div></div>
 </body></html>`;
 
 const apps = {

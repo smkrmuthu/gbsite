@@ -12,10 +12,11 @@ Both are static sites. They deploy independently but share one design system and
 one configuration file, so a phone number or brand colour changes in one place.
 
 > **Status (November 2026):** the design, pages, SEO, accessibility and tooling
-> are built and verified. The previous website could not be reached during the
-> build, so **no original photographs or text were copied** and several details
-> are still to come from the estate. Missing items appear on the pages as
-> clearly marked "To be supplied by the estate" notes. See
+> are built and verified. The official logo, 10 photographs and 5 product images
+> supplied from the previous website are in place (see `IMAGE-ASSETS.md`).
+> Text, contact details, prices and several facts are still to come from the
+> estate. Missing items appear on the pages as clearly marked "To be supplied by
+> the estate" notes. See
 > [Content still needed from the estate](#content-still-needed-from-the-estate).
 
 ---
@@ -141,7 +142,7 @@ domains. To keep them local, create `apps/main/.env` with
 | `ordering.externalUrl` (+ `externalLabel`) | Order buttons go to this page | Falls back to WhatsApp |
 | `ordering.whatsappNumber` | Order buttons open WhatsApp with a pre-written message naming the product | Falls back to email, then to a "contact us to order" note |
 | `social` | Footer and contact-page links; X handle used for Twitter cards; `sameAs` in schema | Hidden |
-| `logoPath` | Official logo in header/footer and in Organization schema | Typographic wordmark |
+| `logo` | Official logo in header (forest), footer (white) and Organization schema | Typographic wordmark if set to `null` |
 
 ### Deployment settings: environment variables
 
@@ -166,15 +167,16 @@ both deployments.
 - **Estate facts:** `packages/brand/config/facts.ts`. Each fact carries its source.
   Set `verified: true` once the estate confirms it. Page copy reads these values,
   so changing a value (for example the elevation) updates every page.
-- **Products:** follow the instructions at the top of `apps/shop/src/data/products.ts`.
-  Set `status: 'published'` only for confirmed products. Published products are
-  indexed, listed in the sitemap, get Product structured data (with offers only
-  when a price is entered) and show an Order button. Delete the three placeholder
-  entries once real products exist.
+- **Products:** `apps/shop/src/data/products.ts` (instructions at the top). The five
+  products (Chandragiri, Selection 9, Yellow Maragogipe, Selection 5B, HRC) are named
+  from the jar labels on the old site. Add `variants` (size + price), `roast`, `form`,
+  `process` and `tastingNotes` as the estate confirms them: each product page lists
+  what is still missing. Products are indexed, listed in the sitemap and get Product
+  structured data (offers only when a price is entered). Order buttons appear once an
+  ordering route is configured.
 - **Photographs:** save a file in `packages/brand/photos/` named after a slot
-  (for example `estate-hero.jpg`, `product-<slug>.jpg`). The list of slots is in
-  `packages/brand/photos/README.md`. The build optimises it automatically. Then
-  update `IMAGE-ASSETS.md`.
+  (see `packages/brand/photos/README.md` and `config/photos.ts`, where alt text and
+  focal points live). The build optimises it automatically. Then update `IMAGE-ASSETS.md`.
 - **Page copy:** edit the `.astro` files in `apps/*/src/pages/`. Text is plain
   HTML inside each file. "To be supplied" notes are `<Pending … />` elements:
   replace each with real content and delete the note.
@@ -194,13 +196,18 @@ both deployments.
 3. **Ordering route:** WhatsApp number or external ordering URL. Also confirm how
    payment and delivery are arranged, so the shop's "How ordering works" steps
    describe them accurately.
-4. **Products:** names, descriptions, sizes, prices, species, process, roast,
-   form, tasting notes and photos. Three placeholders hold the layout today.
-5. **Photographs:** 14 page slots plus one per product, with permission to publish.
+4. **Products:** sizes, prices, roast, whole bean or ground, process and tasting
+   notes for the five named coffees. Also confirm the names and the variety facts
+   used, and whether the jar images show the real packaging.
+5. **Photographs:** confirm which supplied photos were taken at Glazebrooke and
+   that the estate may reuse them (see `IMAGE-ASSETS.md`), and get consent from
+   the woman shown sorting cherries. Still missing: a family/heritage photo and a
+   team portrait.
 6. **Story content:** family history and founding details, biodiversity, actual
    sustainability practices (and any certifications actually held), team
    profiles (with consent), and confirmation of the four values on the Our Brand page.
-7. **Official logo** and **social profile URLs**.
+7. **Vector (SVG) logo**, approval of the forest-green header version, and
+   **social profile URLs**.
 8. **Privacy notice review**, and the **list of old URLs** for redirects.
 
 When all of this is done, set `PUBLIC_HIDE_PLACEHOLDERS=true` and run `npm run ci`.
@@ -208,9 +215,9 @@ When all of this is done, set `PUBLIC_HIDE_PLACEHOLDERS=true` and run `npm run c
 ## About the previous website
 
 `https://glazebrookecoffee.com` (including `/beyond-coffee/`) could not be
-reached from the build environment, and the project owner did not have access
-to it either. To copy its text and images once it is reachable from any machine,
-run:
+reached from the build environment. The owner supplied its logo and images
+(see `IMAGE-ASSETS.md`), but not yet its text. To copy its text (and its URL
+list for redirects) from any machine that can reach it, run:
 
 ```bash
 npm run import:legacy

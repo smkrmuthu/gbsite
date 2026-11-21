@@ -74,6 +74,13 @@ const productSchema = published
   : [];
 
 const others = products.filter((p) => p.slug !== product.slug).slice(0, 3);
+const missing = [
+  product.variants.length === 0 && 'Pack sizes and prices',
+  !product.roast && 'Roast level',
+  !product.form && 'Whole bean or ground',
+  !product.process && 'Processing method',
+  !(product.tastingNotes && product.tastingNotes.length) && 'Tasting notes approved by the estate',
+].filter(Boolean) as string[];
 const description = published
   ? `${product.summary} Estate-grown at Glazebrooke Coffee Estate, Yercaud, Tamil Nadu.`.slice(0, 160)
   : `Placeholder product page (${product.slug}) for the Glazebrooke Coffee shop. Details will be published once confirmed by the estate.`;
@@ -153,11 +160,13 @@ const description = published
           </div>
 
           {
-            !published && (
+            !published ? (
               <Pending
                 title="Product details"
                 items={['Product name', 'Description', 'Pack sizes and prices', 'Species, process, roast and form', 'Product photograph']}
               />
+            ) : (
+              missing.length > 0 && <Pending title="Details for this coffee" items={missing} />
             )
           }
         </div>

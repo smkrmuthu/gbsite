@@ -8,6 +8,8 @@ import { brand } from '../config/brand.config';
 
 interface Props extends HeadProps {
   descriptor: string;
+  /** Small label shown beside the logo (e.g. 'Shop'). */
+  logoSuffix?: string;
   nav: NavItem[];
   cta?: NavItem & { track?: string };
   footerNav: NavItem[];
@@ -15,7 +17,7 @@ interface Props extends HeadProps {
   contactHref?: string;
   privacyHref?: string;
 }
-const { descriptor, nav, cta, footerNav, crossLink, contactHref = '/contact/', privacyHref = '/privacy/', ...head } = Astro.props;
+const { descriptor, logoSuffix, nav, cta, footerNav, crossLink, contactHref = '/contact/', privacyHref = '/privacy/', ...head } = Astro.props;
 ---
 
 <!doctype html>
@@ -26,11 +28,11 @@ const { descriptor, nav, cta, footerNav, crossLink, contactHref = '/contact/', p
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <Header nav={nav} cta={cta} descriptor={descriptor} />
+    <Header nav={nav} cta={cta} descriptor={descriptor} logoSuffix={logoSuffix} />
     <main id="main" tabindex="-1">
       <slot />
     </main>
-    <Footer descriptor={descriptor} nav={footerNav} crossLink={crossLink} contactHref={contactHref} privacyHref={privacyHref} />
+    <Footer descriptor={descriptor} logoSuffix={logoSuffix} nav={footerNav} crossLink={crossLink} contactHref={contactHref} privacyHref={privacyHref} />
     <Analytics privacyHref={privacyHref} />
   </body>
 </html>

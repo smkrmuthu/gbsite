@@ -69,8 +69,11 @@ All titles and descriptions are unique (checked by `npm run verify`). Titles use
 | `/contact/` | Contact the Glazebrooke Coffee Shop \| Orders and Product Questions | Questions about Glazebrooke coffee or an order? Contact the Glazebrooke Coffee shop, run by Glazebrooke Coffee Estate in Yercaud, Tamil Nadu. | brand + orders |
 | `/privacy/`, `/404.html` | as brand site | | n/a |
 
-The three placeholder product pages (`/products/estate-coffee-placeholder-*/`) are
-deliberately `noindex` and excluded from the sitemap until real products replace them.
+Product pages: `/products/chandragiri/`, `/products/selection-9/`,
+`/products/yellow-maragogipe/`, `/products/selection-5b/` and
+`/products/hrc-hybrid-robusta/`, named from the jar labels on the previous
+website. Any product given `status: 'placeholder'` is `noindex` and left out of
+the sitemap automatically.
 
 **Note:** several descriptions say "family-owned", which is an unverified fact.
 If `PUBLIC_PUBLISH_UNVERIFIED_FACTS=false` is set, page **copy** drops it, but these
@@ -96,7 +99,7 @@ JSON-LD in one `@graph` per page, generated in `packages/brand/lib/seo.ts`:
 
 | Type | Where | Contents and limits |
 | --- | --- | --- |
-| `Organization` | Brand home, shop home | Name, URL, address limited to **locality / region / country** (Yercaud, Tamil Nadu, IN). `email`, `telephone`, `logo`, `sameAs` are added automatically only when configured. No `foundingDate` (only a decade is known). |
+| `Organization` | Brand home, shop home | Name, URL, address limited to **locality / region / country** (Yercaud, Tamil Nadu, IN). `logo` uses the official logo (`/logo.png`); `email`, `telephone` and `sameAs` are added automatically only when configured. No `foundingDate` (only a decade is known). |
 | `WebSite` | Both homes | Name, URL, language, publisher → Organization |
 | `WebPage` | Every indexable page | Name, description, URL, `isPartOf` WebSite, `about` Organization |
 | `BreadcrumbList` | Shop: Shop all, product pages | Matches the visible breadcrumbs |
@@ -121,15 +124,18 @@ or `Review` anywhere: `npm run verify` fails the build check if they appear.
 - Descriptive link text throughout ("Explore the estate", not "click here").
   `npm run verify` checks every internal and cross-site link resolves.
 
-## 8. Image SEO (Implemented, awaiting photos)
+## 8. Image SEO (Implemented)
 
-- Descriptive slot filenames (`estate-shevaroy-view`, `coffee-cherries`), descriptive
-  alt text per slot, empty alt for decorative art, and an `aria-hidden` duplicate
-  image link on the home page's topic rows.
-- AVIF/WebP, responsive `srcset`/`sizes`, lazy-loading below the fold, explicit
-  dimensions. Lighthouse: CLS 0–0.01.
-- Default 1200×630 share images per site. Product pages use the product photo as
-  `og:image` automatically once one exists.
+- Descriptive filenames (`sorting-cherries`, `ghat-road-aerial`, `product-chandragiri`)
+  carried into the hashed output names. Alt text describes what is visible; it
+  will name Glazebrooke only once the estate confirms where each photo was taken.
+  Decorative art has empty alt, and the home page's duplicate image links are `aria-hidden`.
+- AVIF/WebP with JPEG/PNG fallback, responsive `srcset`/`sizes`, eager plus
+  `fetchpriority=high` for heroes, lazy-loading below the fold, explicit
+  dimensions, per-photo focal points and reduced quality for the two dense aerial
+  photos. Lighthouse: CLS 0–0.01.
+- Default 1200×630 share images per site (official logo on contour art). Each
+  product page uses its jar image, cropped to 1200×630, as `og:image`.
 - **Recommended:** when photos arrive, give the home hero and each page hero a
   page-specific `image` prop on the layout, so shared links show real estate photography.
 
@@ -137,13 +143,13 @@ or `Review` anywhere: `npm run verify` fails the build check if they appear.
 
 | | Brand site | Shop |
 | --- | --- | --- |
-| Sitemap | `https://glazebrookecoffee.com/sitemap-index.xml` → `sitemap-0.xml` (8 URLs) | `https://shop.glazebrookecoffee.com/sitemap-index.xml` → `sitemap-0.xml` (5 URLs at handover) |
-| Excluded | 404 | 404, placeholder products |
+| Sitemap | `https://glazebrookecoffee.com/sitemap-index.xml` → `sitemap-0.xml` (8 URLs) | `https://shop.glazebrookecoffee.com/sitemap-index.xml` → `sitemap-0.xml` (10 URLs: 5 pages + 5 products) |
+| Excluded | 404 | 404, any `placeholder` product |
 | robots.txt | `User-agent: * / Allow: /` + sitemap line for **this** domain | same, for the shop domain |
 
 Both are generated from the configured domain at build time, so a staging build
 with a different `PUBLIC_*_URL` produces matching URLs. No page is blocked, and
-`noindex` appears only on the 404 and placeholder products (enforced by `npm run verify`).
+`noindex` appears only on the 404 and on any `placeholder` product (enforced by `npm run verify`).
 
 ## 10. Google Search Console and GA4 (Manual)
 
@@ -185,10 +191,10 @@ Run `npm run ci` (check + build + verify) before each deploy.
 | All internal and cross-site links resolve | ✅ |
 | JSON-LD parses; no ratings or reviews; offers only with prices | ✅ (also tested with a temporary priced product) |
 | Sitemap = exactly the indexable pages; robots allows all and points to its own sitemap | ✅ |
-| Lighthouse (mobile, local preview, no photos yet): 6 pages | Performance 100 · Accessibility 100 · Best practices 100 · SEO 100 (placeholder product SEO 66 because it is intentionally `noindex`) |
+| Lighthouse (mobile, local preview, **with real photos**): brand home, Our estate, Our people, Our coffee, shop home, Shop all, Chandragiri | Performance 97–99 · Accessibility 100 · Best practices 100 · SEO 100. LCP 1.9–2.6 s, CLS ≤ 0.01 |
 | Rich Results Test / Schema validator on live URLs | **Manual, after launch** |
 | Search Console coverage and sitemap processing | **Manual, after launch** |
-| Lighthouse re-run with real photographs on the live host | **Manual.** Photos are the main remaining performance risk. |
+| Lighthouse re-run on the live host (real CDN and HTTP/2) | **Manual, after launch** |
 
 ## 12. Future opportunities (Recommended)
 

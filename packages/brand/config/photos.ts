@@ -1,78 +1,88 @@
 /**
  * Photo slots used across both sites.
  *
- * To add a real photograph, save it in `packages/brand/photos/` using the slot
- * key as the filename (any of .jpg .jpeg .png .webp .avif), e.g.
- * `packages/brand/photos/estate-hero.jpg`. The build picks it up, generates
- * AVIF/WebP/JPEG at responsive sizes, and replaces the contour-line placeholder.
- * Then update the matching row in IMAGE-ASSETS.md (source, permission status).
+ * A slot is filled by a file in `packages/brand/photos/` named after its key
+ * (any of .jpg .jpeg .png .webp .avif), e.g. `packages/brand/photos/hills-mist.jpg`.
+ * The build generates AVIF/WebP/JPEG at responsive sizes. A slot with no file
+ * shows a contour-line placeholder instead. Product photos use the key
+ * `product-<slug>` (see apps/shop/src/data/products.ts).
  *
- * `alt` describes what the real photo must show — check it still matches the
- * photo you add, and edit it if not. Recommended minimum width: 2400px for
- * full-bleed slots, 1600px for others.
+ * Alt text describes what each photo visibly shows. Photos supplied from the
+ * previous website have NOT yet been confirmed as taken at Glazebrooke, so the
+ * alt text deliberately does not say they were (see IMAGE-ASSETS.md). Once the
+ * estate confirms a photo, its alt text may name Glazebrooke.
+ *
+ * `position` sets the CSS object-position used when a slot crops the photo.
+ * `quality` (1–100, default 72) lowers encoding quality for very detailed
+ * photos (aerial foliage) that would otherwise be heavy to download.
  */
 export interface PhotoSlot {
   alt: string;
-  /** What the placeholder stands in for — shown in the placeholder caption. */
+  /** What the placeholder stands in for: shown in the placeholder caption. */
   brief: string;
+  position?: string;
+  quality?: number;
 }
 
 export const photoSlots = {
-  'estate-hero': {
-    alt: 'Coffee growing on the slopes of Glazebrooke Coffee Estate in Yercaud',
-    brief: 'wide landscape of the estate slopes',
+  // ---- Supplied from the previous website (November 2026) ----
+  'hills-mist': {
+    alt: 'Forested hills fading into haze under a cloudy evening sky',
+    brief: 'wide landscape of the hills',
+    position: '50% 60%',
   },
-  'estate-slopes': {
-    alt: 'Rows of coffee plants across the hillside at Glazebrooke',
-    brief: 'coffee plants across the hillside',
+  'ghat-road-aerial': {
+    alt: 'Aerial view of a hill road climbing through green forest in a series of hairpin bends',
+    brief: 'aerial view of the hills',
+    quality: 52,
   },
-  'estate-shevaroy-view': {
-    alt: 'View across the Shevaroy Hills from Glazebrooke Coffee Estate',
-    brief: 'view from the estate across the hills',
+  'forest-road-aerial': {
+    alt: 'Aerial view of a road running through dense green forest, with people on two-wheelers',
+    brief: 'aerial view of the forest',
+    quality: 58,
   },
-  'estate-nature': {
-    alt: 'Trees and undergrowth around the coffee at Glazebrooke',
+  'forest-peacock': {
+    alt: 'A peacock in the undergrowth beneath tall forest trees',
     brief: 'trees, wildlife or forest around the coffee',
+    position: '20% 85%',
   },
-  'estate-water-soil': {
-    alt: 'Detail of soil, leaf litter or water on the estate',
-    brief: 'soil, leaf litter or a stream on the estate',
+  'coffee-branches': {
+    alt: 'Coffee branches with clusters of green and ripe red cherries',
+    brief: 'coffee cherries on the branch',
   },
-  'coffee-cherries': {
-    alt: 'Ripe coffee cherries on a branch at Glazebrooke',
-    brief: 'close-up of coffee cherries on the branch',
+  'cherries-in-hands': {
+    alt: 'Cupped hands holding freshly picked red and yellow coffee cherries over a heap of cherries',
+    brief: 'freshly picked coffee cherries',
+    position: '45% 50%',
   },
-  'coffee-beans': {
-    alt: 'Glazebrooke coffee beans',
-    brief: 'Glazebrooke coffee beans, green or roasted',
+  'hands-drying-coffee': {
+    alt: 'Weathered hands spread across a bed of dried coffee cherries',
+    brief: 'coffee drying',
+    position: '40% 50%',
   },
-  'coffee-cup': {
-    alt: 'A cup of Glazebrooke coffee',
-    brief: 'a brewed cup of Glazebrooke coffee',
+  'sorting-cherries': {
+    alt: 'A woman sorting ripe coffee cherries from a woven basket onto a sheet',
+    brief: 'people at work with the harvest',
+    position: '58% 50%',
   },
-  'heritage-archive': {
-    alt: 'Archival photograph from the early years of Glazebrooke Coffee Estate',
-    brief: 'an archival family or estate photograph',
+  'picking-cherries': {
+    alt: 'Hands picking ripe coffee cherries from a coffee plant',
+    brief: 'coffee being picked by hand',
+    position: '55% 50%',
   },
+  'coffee-crates': {
+    alt: 'Blue crates filled with freshly harvested coffee cherries on a sunlit concrete yard',
+    brief: 'the harvest being collected',
+  },
+
+  // ---- Still needed from the estate ----
   'heritage-family': {
     alt: 'The family behind Glazebrooke Coffee Estate',
-    brief: 'portrait of the family today',
-  },
-  'people-harvest': {
-    alt: 'Estate team at work during the coffee harvest at Glazebrooke',
-    brief: 'the team at work during harvest (with their consent)',
+    brief: 'portrait of the family, or an archival estate photograph',
   },
   'people-portrait': {
     alt: 'Portrait of a member of the Glazebrooke estate team',
     brief: 'portrait of a team member (with their consent)',
-  },
-  'people-craft': {
-    alt: 'Hands sorting coffee at Glazebrooke',
-    brief: 'hands at work: picking, sorting or drying',
-  },
-  'shop-hero': {
-    alt: 'Glazebrooke coffee packaging',
-    brief: 'Glazebrooke coffee packaging',
   },
 } satisfies Record<string, PhotoSlot>;
 

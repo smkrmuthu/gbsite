@@ -1,31 +1,28 @@
 # Photographs
 
-Drop estate photographs here, named after a photo slot, and both sites use
-them automatically on the next build (optimised to AVIF/WebP/JPEG at
-responsive sizes). No code changes needed.
+Images here are used by both sites automatically (optimised to AVIF/WebP/JPEG
+at responsive sizes on each build). The filename (without extension) must match
+a slot key in `../config/photos.ts`, or `product-<slug>` for a shop product.
 
-| File name (any of .jpg .png .webp .avif) | What it should show |
-| --- | --- |
-| `estate-hero` | Wide landscape of the estate slopes (home page hero, min. 2560px wide) |
-| `estate-slopes` | Coffee plants across the hillside |
-| `estate-shevaroy-view` | View from the estate across the hills |
-| `estate-nature` | Trees, wildlife or forest around the coffee |
-| `estate-water-soil` | Soil, leaf litter or a stream on the estate |
-| `coffee-cherries` | Close-up of coffee cherries on the branch |
-| `coffee-beans` | Glazebrooke coffee beans, green or roasted |
-| `coffee-cup` | A brewed cup of Glazebrooke coffee |
-| `heritage-archive` | An archival family or estate photograph |
-| `heritage-family` | Portrait of the family today |
-| `people-harvest` | The team at work during harvest (with consent) |
-| `people-portrait` | Portrait of a team member (with consent) |
-| `people-craft` | Hands at work: picking, sorting or drying |
-| `shop-hero` | Glazebrooke coffee packaging |
-| `product-<slug>` | Product photo for `apps/shop/src/data/products.ts` entry `<slug>` |
+| File | Content | Used on |
+| --- | --- | --- |
+| `hills-mist.jpg` | Hazy forested hills at dusk | Brand home hero |
+| `ghat-road-aerial.jpg` | Aerial: hairpin road through forest | Our estate hero |
+| `forest-road-aerial.jpg` | Aerial: road through forest canopy | Our estate |
+| `forest-peacock.jpg` | Peacock beneath forest trees | Home, Our estate, Sustainability |
+| `coffee-branches.jpg` | Coffee branches with cherries | Home, Sustainability hero |
+| `cherries-in-hands.jpg` | Hands holding picked cherries | Our coffee hero, Shop about |
+| `hands-drying-coffee.jpg` | Hands on drying coffee | Our coffee |
+| `sorting-cherries.jpg` | Woman sorting cherries | Home, Our people hero |
+| `picking-cherries.jpg` | Hands picking cherries | Our brand hero |
+| `coffee-crates.jpg` | Crates of harvested cherries | Our people |
+| `product-*.png` | Product jars (transparent) | Shop |
 
-After adding a photo:
-1. Check the slot's alt text in `../config/photos.ts` still describes it.
-2. Record the photo in `IMAGE-ASSETS.md` (source, photographer, permission).
+**Still wanted:** `heritage-family` (family or archival photo) and
+`people-portrait` (team member, with consent).
 
-Only use photographs of Glazebrooke itself in these slots, and only with
-permission to publish. Never use stock or AI-generated images here: the
-captions and alt text present these as the estate.
+To add or replace a photo: save it here with the slot name, check its alt text
+in `../config/photos.ts`, record it in `IMAGE-ASSETS.md`, and run `npm run ci`.
+
+Only use photographs you have the right to publish. Never present stock or
+AI-generated images as the estate.

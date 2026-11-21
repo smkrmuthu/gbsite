@@ -79,12 +79,22 @@ export const brand = {
   social: [] as SocialLink[],
 
   /**
-   * Official logo: copy the file into BOTH apps/main/public/ and
-   * apps/shop/public/ (e.g. logo.png, at least 512px wide) and set its public
-   * path here, e.g. '/logo.png'. While empty, the header uses a typographic
-   * wordmark and schema.org markup omits `logo`.
+   * Official logo, supplied from the previous website (November 2026) as a
+   * white-on-transparent PNG. Files live in BOTH apps/main/public/ and
+   * apps/shop/public/:
+   *   logo-white.png  : original artwork (dark backgrounds: footer)
+   *   logo-forest.png : same artwork recoloured to brand forest green (cream header)
+   *   logo.png        : forest version padded on white (schema.org Organization logo)
+   * Replace with vector (SVG) artwork when available. Set to null to fall
+   * back to the typographic wordmark.
    */
-  logoPath: '',
+  logo: {
+    onLight: '/logo-forest.png',
+    onDark: '/logo-white.png',
+    schema: '/logo.png',
+    width: 480,
+    height: 86,
+  } as { onLight: string; onDark: string; schema: string; width: number; height: number } | null,
 };
 
 export type Brand = typeof brand;

@@ -26,6 +26,10 @@ interface Props {
   class?: string;
   /** Hide the placeholder caption even when placeholders are visible. */
   quiet?: boolean;
+  /** CSS object-position override (defaults to the slot's `position`). */
+  position?: string;
+  /** object-fit: 'cover' (default) or 'contain' for cut-out product shots. */
+  fit?: 'cover' | 'contain';
 }
 
 const {
@@ -39,16 +43,21 @@ const {
   tone = 'forest',
   class: className,
   quiet = false,
+  position,
+  fit = 'cover',
 } = Astro.props;
 
 const image = findPhoto(slot);
-const meta = (photoSlots as Record<string, { alt: string; brief: string }>)[slot];
+const meta = (photoSlots as Record<string, { alt: string; brief: string; position?: string; quality?: number }>)[slot];
 const altText = alt ?? meta?.alt ?? '';
 const placeholderBrief = brief ?? meta?.brief ?? 'photograph';
 const usableWidths = image ? widths.filter((w) => w <= image.width).concat(widths.some((w) => w > image.width) ? [image.width] : []) : [];
 ---
 
-<figure class:list={['photo', className, { 'photo--placeholder': !image }]} style={`--ratio:${ratio}`}>
+<figure
+  class:list={['photo', className, { 'photo--placeholder': !image, 'photo--contain': fit === 'contain' }]}
+  style={`--ratio:${ratio};--position:${position ?? meta?.position ?? '50% 50%'}`}
+>
   {
     image ? (
       <Picture
@@ -60,7 +69,7 @@ const usableWidths = image ? widths.filter((w) => w <= image.width).concat(width
         loading={priority ? 'eager' : 'lazy'}
         fetchpriority={priority ? 'high' : 'auto'}
         decoding={priority ? 'sync' : 'async'}
-        quality={78}
+        quality={meta?.quality ?? 72}
       />
     ) : (
       <>
@@ -89,6 +98,11 @@ const usableWidths = image ? widths.filter((w) => w <= image.width).concat(width
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: var(--position);
+  }
+  .photo--contain :global(img) {
+    object-fit: contain;
+    padding: 6% 8%;
   }
   .photo__note {
     position: absolute;

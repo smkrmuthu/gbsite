@@ -10,9 +10,10 @@ interface Props {
   nav: NavItem[];
   cta?: NavItem & { track?: string };
   descriptor?: string;
+  logoSuffix?: string;
   homeLabel?: string;
 }
-const { nav, cta, descriptor, homeLabel = `${brand.name} home` } = Astro.props;
+const { nav, cta, descriptor, logoSuffix, homeLabel = `${brand.name} home` } = Astro.props;
 
 const here = Astro.url.pathname;
 const isCurrent = (href: string) => (href === '/' ? here === '/' : here === href || here.startsWith(href));
@@ -21,7 +22,7 @@ const isCurrent = (href: string) => (href === '/' ? here === '/' : here === href
 <header class="site-header">
   <div class="container site-header__inner">
     <a href="/" class="site-header__brand" aria-label={homeLabel} aria-current={here === '/' ? 'page' : undefined}>
-      <Wordmark descriptor={descriptor} />
+      <Wordmark descriptor={descriptor} suffix={logoSuffix} tone="light" />
     </a>
 
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">

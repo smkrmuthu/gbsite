@@ -17,7 +17,7 @@ export function organizationSchema(): JsonLd {
     '@id': ORG_ID,
     name: brand.name,
     url: `${MAIN_SITE_URL}/`,
-    ...(brand.logoPath ? { logo: `${MAIN_SITE_URL}${brand.logoPath}` } : {}),
+    ...(brand.logo ? { logo: `${MAIN_SITE_URL}${brand.logo.schema}` } : {}),
     address: {
       '@type': 'PostalAddress',
       addressLocality: brand.location.locality,

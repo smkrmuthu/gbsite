@@ -8,13 +8,14 @@ import type { NavItem } from './Header.astro';
 
 interface Props {
   descriptor?: string;
+  logoSuffix?: string;
   nav: NavItem[];
   /** Link to the sister site (shop ↔ estate). */
   crossLink: NavItem & { note: string; track?: string };
   contactHref: string;
   privacyHref: string;
 }
-const { descriptor, nav, crossLink, contactHref, privacyHref } = Astro.props;
+const { descriptor, logoSuffix, nav, crossLink, contactHref, privacyHref } = Astro.props;
 const { contact, social, location } = brand;
 const year = new Date().getFullYear();
 const familyOwned = fact('familyOwned');
@@ -25,7 +26,7 @@ const familyOwned = fact('familyOwned');
     <div class="site-footer__grid">
       <div class="site-footer__brand">
         <a href="/" class="site-footer__home" aria-label={`${brand.name} home`}>
-          <Wordmark descriptor={descriptor} />
+          <Wordmark descriptor={descriptor} suffix={logoSuffix} tone="dark" />
         </a>
         <p class="site-footer__about">
           {familyOwned ? 'A family-owned coffee estate' : 'A coffee estate'} in {location.locality}, {location.hills}, {location.region}, {location.country}.

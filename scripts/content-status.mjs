@@ -40,11 +40,26 @@ add('Ordering (brand.config.ts → ordering)', [
 ].filter(Boolean));
 
 add('Social links (brand.config.ts → social)', brand.social.length ? [] : ['No official social profiles configured']);
-add('Official logo (brand.config.ts → logoPath)', brand.logoPath ? [] : ['Typographic wordmark in use until the official logo is supplied']);
+add('Official logo (brand.config.ts → logo)', brand.logo ? ['Raster PNG from the previous website in use; supply vector (SVG) artwork if available'] : ['Typographic wordmark in use until the official logo is supplied']);
 add('Unverified facts (packages/brand/config/facts.ts — set verified: true once confirmed)', unverifiedFacts);
 add(
   'Products (apps/shop/src/data/products.ts)',
-  products.filter((p) => p.status !== 'published').map((p) => `${p.slug}: placeholder — replace with a confirmed product`),
+  [
+    ...products.filter((p) => p.status !== 'published').map((p) => `${p.slug}: placeholder — replace with a confirmed product`),
+    ...products
+      .filter((p) => p.status === 'published')
+      .map((p) => {
+        const gaps = [
+          p.variants.length === 0 && 'sizes/prices',
+          !p.roast && 'roast',
+          !p.form && 'whole bean or ground',
+          !p.process && 'process',
+          !(p.tastingNotes && p.tastingNotes.length) && 'tasting notes',
+        ].filter(Boolean);
+        return gaps.length ? `${p.name}: ${gaps.join(', ')}` : null;
+      })
+      .filter(Boolean),
+  ],
 );
 add(
   'Photographs (packages/brand/photos/<slot>.jpg)',

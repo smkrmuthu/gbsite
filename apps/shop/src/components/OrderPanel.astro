@@ -1,10 +1,9 @@
 ---
 /**
  * The ordering call to action for one product. Says plainly what happens on
- * click. Placeholder products and unconfigured ordering show a clear note
- * instead of a dead button.
+ * click. Placeholder products show a note; with no ordering route configured
+ * the button leads to the contact page instead.
  */
-import Pending from '@glazebrooke/brand/components/Pending.astro';
 import { orderAction } from '@glazebrooke/brand/lib/links';
 import { type Product, isPublished } from '../data/products';
 
@@ -38,9 +37,10 @@ const action = product.orderUrl
       </>
     ) : (
       <>
-        <p class="order__note">Online ordering details are being finalised. Please contact us to order.</p>
-        <a class="text-link" href="/contact/">Contact us</a>
-        <Pending title="Ordering route" items={['WhatsApp number or external ordering URL (brand.config.ts → ordering)']} />
+        <a class="btn order__btn" href="/contact/" data-track="order_click" data-track-label={`${product.name} (contact)`}>
+          Contact us to order
+        </a>
+        <p class="order__explains">Online ordering is being set up. Send us a message and we will help you place your order.</p>
       </>
     )
   }

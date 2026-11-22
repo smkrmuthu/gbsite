@@ -8,6 +8,8 @@ const { contact, social, location } = brand;
 const missing = [
   !contact.email && 'Enquiries email address',
   !contact.phone && 'Phone number',
+  !brand.ordering.whatsappNumber && 'WhatsApp number for orders',
+  !contact.email && !contact.formEndpoint && 'A way to receive website messages (the email above, or an online form service)',
   contact.address.length === 0 && 'Postal address of the estate',
   !contact.mapUrl && 'Map link to the estate',
   social.length === 0 && 'Official social media profile links',
@@ -85,7 +87,7 @@ const missing = [
       )
     }
   </dl>
-  {missing.length > 0 && <Pending title="Verified contact details" items={missing} />}
+  {missing.length > 0 && <Pending title="Contact details" items={missing} />}
 </div>
 
 <style>

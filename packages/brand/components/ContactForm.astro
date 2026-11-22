@@ -3,11 +3,11 @@
  * Contact form with three honest modes, chosen from brand.config.ts:
  *  1. contact.formEndpoint set → POSTs to that service (no page reload).
  *  2. only contact.email set   → opens the visitor's email app, message prefilled.
- *  3. neither set              → the form is not rendered (renders a <Pending> note).
+ *  3. neither set              → nothing is rendered; pages show a photo instead and
+ *     ContactDetails lists the missing route.
  * Validation errors are announced and linked to their fields.
  */
 import { brand } from '../config/brand.config';
-import Pending from './Pending.astro';
 
 interface Props {
   topics: string[];
@@ -21,15 +21,7 @@ const id = (n: string) => `${idPrefix}-${n}`;
 ---
 
 {
-  mode === 'none' ? (
-    <Pending
-      title="Contact route for this form"
-      items={[
-        'A public email address for enquiries, or',
-        'An online form service to receive messages (for example Formspree)',
-      ]}
-    />
-  ) : (
+  mode !== 'none' && (
     <form
       class="contact-form"
       novalidate

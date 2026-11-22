@@ -104,6 +104,7 @@ const elevation = elevationRange();
   }
   .origin__list div {
     display: grid;
+    align-content: start; /* keep values directly under their labels when a neighbour wraps */
     gap: var(--s-1);
     padding-top: var(--s-4);
     border-top: 1px solid var(--c-rule-strong);
@@ -119,9 +120,15 @@ const elevation = elevationRange();
     color: var(--c-forest);
     line-height: 1.25;
   }
+  /* Same label style as "Grown at" / "Region" above, so the section reads as one block. */
   .range__title {
-    font-size: var(--t-lg);
-    margin: var(--s-6) 0 var(--s-3);
+    font-family: var(--f-text);
+    font-size: var(--t-sm);
+    font-weight: 650;
+    line-height: 1.4;
+    letter-spacing: 0;
+    color: var(--c-olive-ink);
+    margin: var(--s-7) 0 var(--s-2);
   }
   .range {
     list-style: none;

@@ -2,7 +2,8 @@
 import ShopLayout from '../layouts/ShopLayout.astro';
 import ContactDetails from '@glazebrooke/brand/components/ContactDetails.astro';
 import ContactForm from '@glazebrooke/brand/components/ContactForm.astro';
-import { orderAction } from '@glazebrooke/brand/lib/links';
+import Photo from '@glazebrooke/brand/components/Photo.astro';
+import { orderAction, hasContactRoute } from '@glazebrooke/brand/lib/links';
 
 const order = orderAction();
 ---
@@ -15,6 +16,9 @@ const order = orderAction();
     <div class="container grid">
       <div class="contact__intro">
         <h1 class="t-3xl">Questions about our coffee or an order?</h1>
+        <p class="contact__lede">
+          We are happy to help with orders, questions about a coffee, and trade or wholesale enquiries.
+        </p>
         {
           order && (
             <div class="contact__order">
@@ -35,10 +39,18 @@ const order = orderAction();
         }
         <ContactDetails />
       </div>
-      <div class="contact__form">
-        <h2 class="t-2xl">Send us a message</h2>
-        <ContactForm topics={['Ordering coffee', 'A product question', 'Trade and wholesale', 'Something else']} idPrefix="shop-contact" />
-      </div>
+      {
+        hasContactRoute() ? (
+          <div class="contact__form">
+            <h2 class="t-2xl">Send us a message</h2>
+            <ContactForm topics={['Ordering coffee', 'A product question', 'Trade and wholesale', 'Something else']} idPrefix="shop-contact" />
+          </div>
+        ) : (
+          <div class="contact__media">
+            <Photo slot="coffee-crates" ratio="4 / 5" sizes="(min-width: 64rem) 40vw, 100vw" />
+          </div>
+        )
+      }
     </div>
   </section>
 </ShopLayout>
@@ -51,6 +63,11 @@ const order = orderAction();
     display: grid;
     gap: var(--s-7);
     align-content: start;
+  }
+  .contact__lede {
+    max-width: 30rem;
+    font-size: var(--t-lg);
+    margin-top: calc(var(--s-7) * -0.5);
   }
   .contact__order {
     display: grid;
@@ -66,6 +83,9 @@ const order = orderAction();
   @media (min-width: 64rem) {
     .contact__intro {
       grid-column: 1 / span 6;
+    }
+    .contact__media {
+      grid-column: 8 / -1;
     }
     .contact__form {
       grid-column: 8 / -1;

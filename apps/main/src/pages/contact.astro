@@ -2,7 +2,8 @@
 import MainLayout from '../layouts/MainLayout.astro';
 import ContactDetails from '@glazebrooke/brand/components/ContactDetails.astro';
 import ContactForm from '@glazebrooke/brand/components/ContactForm.astro';
-import { shopUrl } from '@glazebrooke/brand/lib/links';
+import Photo from '@glazebrooke/brand/components/Photo.astro';
+import { shopUrl, hasContactRoute } from '@glazebrooke/brand/lib/links';
 ---
 
 <MainLayout
@@ -23,10 +24,18 @@ import { shopUrl } from '@glazebrooke/brand/lib/links';
           <a class="text-link" href={shopUrl('/')} data-track="shop_click" data-track-label="contact page">Visit the shop</a>
         </div>
       </div>
-      <div class="contact__form">
-        <h2 class="t-2xl">Send us a message</h2>
-        <ContactForm topics={['General enquiry', 'Buying coffee', 'Trade and partnerships', 'Press and media']} />
-      </div>
+      {
+        hasContactRoute() ? (
+          <div class="contact__form">
+            <h2 class="t-2xl">Send us a message</h2>
+            <ContactForm topics={['General enquiry', 'Buying coffee', 'Trade and partnerships', 'Press and media']} />
+          </div>
+        ) : (
+          <div class="contact__media">
+            <Photo slot="ghat-road-aerial" ratio="4 / 5" sizes="(min-width: 64rem) 40vw, 100vw" />
+          </div>
+        )
+      }
     </div>
   </section>
 </MainLayout>
@@ -58,6 +67,9 @@ import { shopUrl } from '@glazebrooke/brand/lib/links';
   @media (min-width: 64rem) {
     .contact__intro {
       grid-column: 1 / span 6;
+    }
+    .contact__media {
+      grid-column: 8 / -1;
     }
     .contact__form {
       grid-column: 8 / -1;

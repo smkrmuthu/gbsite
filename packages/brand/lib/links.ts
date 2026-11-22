@@ -8,6 +8,9 @@ export const shopUrl = (path = '/') => join(SHOP_URL, path);
 /** Absolute URL on the main brand domain (used by the shop's estate links). */
 export const mainUrl = (path = '/') => join(MAIN_SITE_URL, path);
 
+/** True when the contact form can deliver messages (form service or email configured). */
+export const hasContactRoute = () => Boolean(brand.contact.formEndpoint || brand.contact.email);
+
 export const mailto = (email: string, subject?: string) =>
   `mailto:${email}${subject ? `?subject=${encodeURIComponent(subject)}` : ''}`;
 export const tel = (phone: string) => `tel:${phone.replace(/[^\d+]/g, '')}`;
